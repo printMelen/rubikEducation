@@ -64,14 +64,24 @@ const verifyToken = async (req, res, next) => {
         if(err){
             return res.status(400).json({message:"Token invalido"});
         }
-        console.log(user.id);
+        // console.log(user.id);
         req.id = user.id;
     });
     next();
 };
 
 const getUser = async (req, res, next) => {
-
+    const userId = req.id;
+    let user;
+    try {
+        user = await User.findById(userId, '-contrasenia');
+    } catch (err) {
+        return new Error(err);
+    }
+    if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    return res.status(200).json({ user });
 };
 exports.signUp = signUp;
 exports.login = login;
