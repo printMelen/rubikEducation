@@ -36,17 +36,18 @@ const Login = () => {
       <div className="grid grid-cols-5 grid-rows-6 h-screen">
         <div className="col-span-2 row-span-1 bg-[#E0E5E7] border-black border-[2px]"></div>
         <div className="col-span-2 row-span-5 col-start-1 row-start-2 bg-[#014A97] border-black border-[2px] flex items-center">
-          <Card className="h-[90%] w-[75%] mx-auto ">
+          <Card className="h-[90%] w-[75%] mx-auto font-sans">
+            {/* flex flex-col justify-center gap-6 */}
             <CardHeader>
-              <CardTitle>Login</CardTitle>
+              <CardTitle className="text-4xl font-bold">Login</CardTitle>
               <CardDescription>Rubik Education</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-9">
+                <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-9 justify-center">
                   <FormField name="email" render={({ field })=>{
-                    return <FormItem>
-                      <FormLabel>Email address</FormLabel>
+                    return <FormItem >
+                      <FormLabel >Email address</FormLabel>
                       <FormControl>
                         <Input 
                         className="h-[50px]"
