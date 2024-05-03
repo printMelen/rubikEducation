@@ -9,6 +9,10 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    backgroundImage: {
+      'cubosLogin': "url('src/assets/todosCubosLogin.svg')",
+      // 'footer-texture': "url('/img/footer-texture.png')",
+    },
     fontFamily: {
       sans: ["Titillium Web", "sans-serif"],
     },

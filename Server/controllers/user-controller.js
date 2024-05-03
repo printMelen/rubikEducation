@@ -2,8 +2,8 @@ const User = require('../model/User');
 const bcrypt = require('bcryptjs');
 const e = require('express');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-const CONTRASENIA_JWT = "nfsdfsañalmvdp221o3m33";
 
 const signUp = async (req, res, next) => {
     const { nombre, correo, contrasenia } = req.body;
@@ -33,49 +33,34 @@ const signUp = async (req, res, next) => {
 
     return res.status(201).json({ message: user });
 }
-const login = async (req, res, next) => {
-    const { correo, contrasenia } = req.body;
-    let userExist;
-    try {
-        userExist = await User.findOne({ correo: correo });
-    } catch (err) {
-        console.log(err);
-    }
-    if (!userExist) {
-        return res.status(400).json({ message: "El usuario no existe registrese" });
-    }
-    const contraseniaCorrecta = bcrypt.compareSync(contrasenia, userExist.contrasenia);
-    if (!contraseniaCorrecta) {
-        return res.status(400).json({ message: "Datos incorrectos vuelva a intentarlo" });
-    }
-    const token = jwt.sign({ id: userExist._id }, CONTRASENIA_JWT, {
-        // expiresIn: '1h',
-        expiresIn: '30s',
-    })
 
-    res.cookie(String(userExist._id), token, {
-        path: '/',
-        expires: new Date(Date.now() + 1000 * 30),
-        httpOnly: true,
-        sameSite: 'lax'
-    });
 
-    return res.status(200).json({
-        message: "Inicio de sesión correcto",
-        user: userExist, token
-    });
-}
 
 const verifyToken = async (req, res, next) => {
     const cookies = req.headers.cookie;
     const token = cookies.split('=')[1];
-    console.log(token);
+    // const token = cookies.split('=')[1];
+    // console.log(token);
+    // let authorization= req.get('authorization');
+    // let token='';
+    // if (authorization && authorization.toLowerCase().startsWith('bearer')) {
+    //     token = authorization.substring(7);
+    // }
+    // let decodedToken = {};
+    // try {
+        // decodedToken = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
+    // } catch (e) {
+    // }
+
+    // if (!token || !decodedToken.id) {
+    //     return res.status(400).json({message:"Token invalido"});
+    // }
     // const headers = req.headers['authorization'];
     // const token = headers.split(' ')[1];
     if(!token){
         return res.status(404).json({message:"Token no encontrado"});
     }
-    jwt.verify(String(token),CONTRASENIA_JWT,(err,user)=>{
+    jwt.verify(String(token),process.env.ACCESS_TOKEN_SECRET,(err,user)=>{
         if(err){
             return res.status(400).json({message:"Token invalido"});
         }
@@ -100,6 +85,5 @@ const getUser = async (req, res, next) => {
 };
 
 exports.signUp = signUp;
-exports.login = login;
 exports.verifyToken = verifyToken;
 exports.getUser = getUser;
