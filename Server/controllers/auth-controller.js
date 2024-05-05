@@ -65,7 +65,8 @@ const login = async (req, res, next) => {
     // });
     res.cookie('jwt', refreshToken, {
         path: '/',
-        expires: new Date(Date.now() + 1000 * 30),
+        // expires: new Date(Date.now() + 1000 * 30),
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 7),
         httpOnly: true,
         secure: true,
         sameSite: 'None',
@@ -100,7 +101,7 @@ const refresh= (req, res)=>{
                 "rol": usuarioEncontrado.rol
             }},
             process.env.ACCESS_TOKEN_SECRET,
-            {expiresIn:'1m'}
+            {expiresIn:'5m'}
         )
         res.json({accessToken});
     }));
