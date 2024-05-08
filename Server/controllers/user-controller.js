@@ -36,39 +36,39 @@ const signUp = async (req, res, next) => {
 
 
 
-const verifyToken = async (req, res, next) => {
-    const cookies = req.headers.cookie;
-    const token = cookies.split('=')[1];
-    // const token = cookies.split('=')[1];
-    // console.log(token);
-    // let authorization= req.get('authorization');
-    // let token='';
-    // if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-    //     token = authorization.substring(7);
-    // }
-    // let decodedToken = {};
-    // try {
-        // decodedToken = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
-    // } catch (e) {
-    // }
+// const verifyToken = async (req, res, next) => {
+//     const cookies = req.headers.cookie;
+//     const token = cookies.split('=')[1];
+//     // const token = cookies.split('=')[1];
+//     // console.log(token);
+//     // let authorization= req.get('authorization');
+//     // let token='';
+//     // if (authorization && authorization.toLowerCase().startsWith('bearer')) {
+//     //     token = authorization.substring(7);
+//     // }
+//     // let decodedToken = {};
+//     // try {
+//         // decodedToken = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
+//     // } catch (e) {
+//     // }
 
-    // if (!token || !decodedToken.id) {
-    //     return res.status(400).json({message:"Token invalido"});
-    // }
-    // const headers = req.headers['authorization'];
-    // const token = headers.split(' ')[1];
-    if(!token){
-        return res.status(404).json({message:"Token no encontrado"});
-    }
-    jwt.verify(String(token),process.env.ACCESS_TOKEN_SECRET,(err,user)=>{
-        if(err){
-            return res.status(400).json({message:"Token invalido"});
-        }
-        // console.log(user.id);
-        req.id = user.id;
-    });
-    next();
-};
+//     // if (!token || !decodedToken.id) {
+//     //     return res.status(400).json({message:"Token invalido"});
+//     // }
+//     // const headers = req.headers['authorization'];
+//     // const token = headers.split(' ')[1];
+//     if(!token){
+//         return res.status(404).json({message:"Token no encontrado"});
+//     }
+//     jwt.verify(String(token),process.env.ACCESS_TOKEN_SECRET,(err,user)=>{
+//         if(err){
+//             return res.status(400).json({message:"Token invalido"});
+//         }
+//         // console.log(user.id);
+//         req.id = user.id;
+//     });
+//     next();
+// };
 
 const getUser = async (req, res, next) => {
     const userId = req.id;
@@ -85,5 +85,5 @@ const getUser = async (req, res, next) => {
 };
 
 exports.signUp = signUp;
-exports.verifyToken = verifyToken;
+// exports.verifyToken = verifyToken;
 exports.getUser = getUser;

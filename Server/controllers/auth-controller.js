@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler')
 require('dotenv').config();
 
-const login = async (req, res, next) => {
+const login = async (req, res, next) => {   
     const { contrasenia, correo  } = req.body;
     // console.log(contrasenia);
     // console.log(correo);
@@ -64,13 +64,13 @@ const login = async (req, res, next) => {
     //     sameSite: 'lax'
     // });
     res.cookie('jwt', refreshToken, {
-        path: '/',
+        // path: '/',
         // expires: new Date(Date.now() + 1000 * 30),
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 7),
+        expiresIn: 1000 * 60 * 60 * 7,
         httpOnly: true,
-        secure: true,
-        sameSite: 'None',
-        maxAge: 7*24*60*60*1000,
+        // secure: true,
+        // sameSite: 'None',
+        // maxAge: 7*24*60*60*1000,
     });
 
     return res.status(200).json({
@@ -108,12 +108,24 @@ const refresh= (req, res)=>{
 }
 
 const logout=(req,res)=>{
-    const cookies = req.cookies;
-    if (!cookies?.jwt) {
-        return res.status(204);
-    }
-    res.clearCookie('jwt',{httpOnly: true, sameSite:'None', secure: true});
-    res.json({message: 'Cookie limpiada'});
+    const jwt = req.cookies.jwt;
+    console.log(jwt);
+    // if (!cookies?.jwt) {
+    //     return res.status(204);
+    // }
+    // console.log("Hola");
+    res.clearCookie("jwt");
+    return res.redirect("/login");
+    // res.cookie('jwt','',{maxAge:1});
+    // res.clearCookie('jwt',{httpOnly: true, 
+        // path:'/', 
+    // sameSite:'None',
+    //  secure: true
+    // });
+    // console.log("despues del jwt");
+    // res.clearCookie('accessToken');
+    // console.log("despues del aT");
+    // res.json({message: 'Cookie limpiada'});
 }
 
 exports.login = login;

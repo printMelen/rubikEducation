@@ -4,7 +4,7 @@ const verifyToken=(req,res,next)=>{
     // let authorization= req.get('authorization');
     const authHeader = req.headers.authorization || req.headers.Authorization;
     if (!authHeader?.startsWith('Bearer')) {
-        return res.status(401).json({message: 'Unauthorized'});
+        return res.status(401).json({message: 'No autorizado'});
     }
     // if (authorization && authorization.toLowerCase().startsWith('bearer')) {
     //     token = authorization.substring(7);
@@ -16,7 +16,7 @@ const verifyToken=(req,res,next)=>{
         if (err) {
             return res.status(403).json({message: 'Prohibido'})
         }
-        req.id=decoded.id;
+        req.id=decoded.id;  
         req.user=decoded.username;
         req.rol=decoded.rol;
         next();
