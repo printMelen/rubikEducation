@@ -1,7 +1,26 @@
 import React from 'react'
 import Logo from "./Logo";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const Profile = () => {
+  let navigate = useNavigate();
+  const accessToken = Cookies.get('accessToken');
+  const jwt = Cookies.get('jwt');
+  console.log(accessToken);
+  console.log(jwt);
+  async function logout() {
+    // console.log("Etro");
+    Cookies.remove('accessToken');
+    const respuesta = await axios
+      .post("http://localhost:5000/auth/logout",{
+        cookies:accessToken
+      });
+    if (respuesta.status === 200) {
+      return navigate("/login");
+    }
+  }
   return (
     
 
@@ -18,19 +37,41 @@ const Profile = () => {
         <span className='text-white'>Learner</span>
       </div>
     </div>
-    <div className="col-span-3 col-start-3 row-start-3 bg-[#E0E5E7] border-black border-[2px]">4</div>
-    <div className="col-span-3 col-start-3 row-start-4 bg-[#014A97] border-black border-[2px]">5</div>
-    <div className="col-span-2 row-span-2 col-start-3 row-start-5 bg-[#E0E5E7] border-black border-[2px]">6</div>
-    <div className="row-span-2 col-start-5 row-start-5 bg-[#D4121A] border-black border-[2px]">7</div>
+    <div className="col-span-3 col-start-3 row-start-3 bg-[#E0E5E7] border-black border-[2px]">
+      <div className='flex flex-col p-2'>
+        <span className='text-black'>Name</span>
+        <span className='text-black'>psfakpfasñfñ</span>
+      </div>
+    </div>
+    <div className="col-span-3 col-start-3 row-start-4 bg-[#014A97] border-black border-[2px]">
+      <div className='flex flex-col p-2'>
+        <span className='text-white'>Email</span>
+        <span className='text-white'>prueba@prueba.com</span>
+      </div>
+    </div>
+    <div className="col-span-2 row-span-2 col-start-3 row-start-5 bg-[#E0E5E7] border-black border-[2px]">
+      <div className='flex flex-col p-2'>
+        <span className='text-black'>Wins</span>
+        <span className='text-black'>2</span>
+      </div>
+    </div>
+    <div className="row-span-2 col-start-5 row-start-5 bg-[#D4121A] border-black border-[2px]">
+      <div className='flex flex-col p-2'>
+        <span className='text-white'>Tournaments</span>
+        <span className='text-white'>4</span>
+      </div>
+    </div>
     <div className="col-span-2 row-span-2 col-start-4 row-start-1 bg-[#D4121A] border-black border-[2px] flex flex-col justify-center items-center">
       <a href="">
         <img srcSet="src/assets/delete.svg" alt="" />
       </a>
     </div>
     <div className="col-span-2 row-span-2 col-start-6 row-start-1 bg-[#1C2422] border-black border-[2px] flex flex-col justify-center items-center">
-      <a href="">
+      {/* <a href=""> */}
+      <button type="button" id='logout' onClick={logout}>
         <h3 className='text-white font-normal text-5xl'>Logout</h3>
-      </a>
+      </button>
+      {/* </a> */}
     </div>
     <div className="col-span-2 row-span-4 col-start-6 row-start-3 bg-[#F0CE06] border-black border-[2px] flex flex-col justify-center items-center">
       <a href="">

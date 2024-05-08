@@ -23,6 +23,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "../store/authState";
+import useAuth  from "../hooks/useAuth";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -47,17 +48,24 @@ const Login = () => {
     // console.log(data);
     try {
       const respuesta = await axios
-      .post("http://localhost:5000/api/login", {
+      .post("http://localhost:5000/auth/login", {
         correo:data.correo,
         contrasenia:data.contrasenia,
       });
       if (respuesta.status === 200) {
+        // const auth = await useAuth();
+        // console.log(respuesta.data.token);
         // console.log("HOLAAAAA🙄");
         // console.log(respuesta.data.token);
         const token = respuesta.data.token; // Supongamos que la API devuelve un token
-
+        // await useAuth();
+        // console.log("EEEEY");
+        // let expires=new Date();
+        // expires.setTime(expires.getTime() + 5 * 60 * 1000);
+        // expires = "expires=" + expires.toUTCString();
+        // document.cookie = "accessToken" + "=" + token + ";" + expires + ";path=/;";
         // Almacenar el token en el estado usando Zustand
-        setToken(token);
+        // setToken(token);
       } else {
         setError("Error de autenticación");
       }
