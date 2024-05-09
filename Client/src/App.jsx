@@ -6,6 +6,9 @@ import ErrorPage from './components/error-page';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Importar BrowserRouter, Routes y Route desde react-router-dom
 import RubikCube from './components/RubikCube';
 import PlayGround from './components/PlayGround';
+import PassRecover from './components/PassRecover';
+import Code from './components/Code';
+import Index from './components/Index';
 
 function App() {
 
@@ -17,6 +20,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/playground" element={<PlayGround />} />
+        <Route path="/passrecover" element={<PassRecover />} />
+        <Route path="/code" element={<Code />} />
+        <Route path="/" element={<Index />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>

@@ -9,8 +9,12 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    screens: {
+      'mid':'891px'
+    },
     backgroundImage: {
       'cubosLogin': "url('src/assets/todosCubosLogin.svg')",
+      'cubosPassRecover': "url('src/assets/desordenGrupo.svg')",
       // 'footer-texture': "url('/img/footer-texture.png')",
     },
     fontFamily: {

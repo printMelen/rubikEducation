@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Rectangulo from "./Rectangulo";
 import Logo from "./Logo";
 import {
@@ -23,7 +23,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "../store/authState";
-import useAuth  from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -33,6 +33,16 @@ const formSchema = z.object({
 
 const Login = () => {
   const [error, setError] = useState(null);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 954);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 954); // Cambiar aquí el punto de quiebre
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   // (state)=>state.token
   const setToken = useAuthStore();
   const form = useForm({
@@ -43,14 +53,13 @@ const Login = () => {
     },
   });
 
-  axios.defaults.withCredentials= true;
+  axios.defaults.withCredentials = true;
   const onSubmit = async (data) => {
     // console.log(data);
     try {
-      const respuesta = await axios
-      .post("http://localhost:5000/auth/login", {
-        correo:data.correo,
-        contrasenia:data.contrasenia,
+      const respuesta = await axios.post("http://localhost:5000/auth/login", {
+        correo: data.correo,
+        contrasenia: data.contrasenia,
       });
       if (respuesta.status === 200) {
         // const auth = await useAuth();
@@ -79,7 +88,6 @@ const Login = () => {
     } catch (error) {
       setError(error.message);
     }
-    
   };
   // axios
   //     .post("http://localhost:5000/api/login", {
@@ -112,94 +120,211 @@ const Login = () => {
     // <div className='text-red-300'>Login</div>
     // <div className='text-green-400'>BUENAS</div>
     <>
-      <div className="grid grid-cols-5 grid-rows-6 h-screen font-sans">
-        <div className="col-span-2 row-span-1 bg-[#E0E5E7] border-black border-[2px]">
-          <Logo />
+      {/* mid:col-span-5 mid:row-span-1 */}
+      {isSmallScreen ? (
+        <div className="grid grid-cols-2 grid-rows-12 gap-0 h-screen font-sans">
+          <div className="col-span-2 row-span-2 bg-[#E0E5E7] border-black border-[2px]">
+            <Logo />
+          </div>
+          <div className="col-span-2 row-span-10 row-start-3 bg-[#014A97] border-black border-[2px] flex flex-col items-center justify-center">
+            <Card className="h-[90%] w-[75%] mx-auto">
+              {/* flex flex-col justify-center gap-6 */}
+              <CardHeader>
+                <CardTitle className="text-4xl font-bold">Login</CardTitle>
+                <CardDescription>Rubik Education</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="flex flex-col gap-9 justify-center"
+                  >
+                    <FormField
+                      name="correo"
+                      render={({ field }) => {
+                        return (
+                          <FormItem>
+                            <FormLabel>Email address</FormLabel>
+                            <FormControl>
+                              <Input
+                                className="h-[50px]"
+                                placeholder="Email address"
+                                type="email"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
+                    ></FormField>
+                    <FormField
+                      name="contrasenia"
+                      render={({ field }) => {
+                        return (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <Input
+                                className="h-[50px]"
+                                placeholder="Password"
+                                type="password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
+                    ></FormField>
+                    <div className="flex flex-col items-end">
+                    <a
+                      className="text-right text-xs text-[#7D7D7D]"
+                      href="/passrecover"
+                    >
+                      Forgot password?
+                    </a>
+                    <span className="font-bold text-[#7D7D7D] text-right text-xs mt-1">
+                  Don´t have an Account?
+                  <a href="/register" className="text-black">
+                    
+                    Register
+                  </a>
+                </span>
+
+                    </div>
+                    {error &&
+                      error.response &&
+                      error.response.data &&
+                      error.response.data.message && (
+                        <span className="text-red-500">
+                          {error.response.data.message}
+                        </span>
+                      )}
+                    <Button type="submit" className="w-full mt-5 h-[50px]">
+                      Login
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+              {/* <CardFooter>
+                
+              </CardFooter> */}
+            </Card>
+          </div>
         </div>
-        <div className="z-0 col-span-2 row-span-5 col-start-1 row-start-2 bg-[#014A97] border-black border-[2px] flex items-center">
-          <Card className="h-[90%] w-[75%] mx-auto">
-            {/* flex flex-col justify-center gap-6 */}
-            <CardHeader>
-              <CardTitle className="text-4xl font-bold">Login</CardTitle>
-              <CardDescription>Rubik Education</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="flex flex-col gap-9 justify-center"
-                >
-                  <FormField
-                    name="correo"
-                    render={({ field }) => {
-                      return (
-                        <FormItem>
-                          <FormLabel>Email address</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="h-[50px]"
-                              placeholder="Email address"
-                              type="email"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      );
-                    }}
-                  ></FormField>
-                  <FormField
-                    name="contrasenia"
-                    render={({ field }) => {
-                      return (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="h-[50px]"
-                              placeholder="Password"
-                              type="password"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      );
-                    }}
-                  ></FormField>
-                  <a className="text-right text-xs text-[#7D7D7D]" href="/recovery">Forgot password?</a>
-                  {error &&
-                    error.response &&
-                    error.response.data &&
-                    error.response.data.message && (
-                      <span className="text-red-500">
-                        {error.response.data.message}
-                      </span>
-                    )}
-                  <Button type="submit" className="w-full mt-5 h-[50px]">
-                    Login
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-            {/* <CardFooter>
+      ) : (
+        // <div className="grid grid-cols-5 grid-rows-6 h-screen font-sans">
+        // <div className="z-0 col-span-2 row-span-5  col-start-1 row-start-2 bg-[#014A97] border-black border-[2px] flex items-center">
+
+        // </div>
+        // <div className="z-1 col-span-3 row-span-4 col-start-3 row-start-1 bg-[#F0CE06] border-black border-[2px] bg-cubosLogin bg-cover">
+        //   {/* <img alt="" srcset="src/assets/todosCubosLogin.svg" className="object-cover z-5" /> */}
+        // </div>
+        // <div className="z-0 col-span-3 row-span-2 col-start-3 row-start-5 bg-[#E0E5E7] border-black border-[2px] flex flex-col items-center justify-center">
+        //   <span className="font-bold text-[#7D7D7D] text-xl">
+        //     Don´t have an Account?
+        //     <a href="/register" className="text-black">
+        //       {" "}
+        //       Register
+        //     </a>
+        //   </span>
+        // </div>
+        // </div>
+        <div className="grid grid-cols-5 grid-rows-6 h-screen font-sans">
+          <div className="col-span-2 row-span-1  bg-[#E0E5E7] border-black border-[2px]">
+            <Logo />
+          </div>
+          <div className="z-0 col-span-2 row-span-5  col-start-1 row-start-2 bg-[#014A97] border-black border-[2px] flex items-center">
+            <Card className="h-[90%] w-[75%] mx-auto">
+              {/* flex flex-col justify-center gap-6 */}
+              <CardHeader>
+                <CardTitle className="text-4xl font-bold">Login</CardTitle>
+                <CardDescription>Rubik Education</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="flex flex-col gap-9 justify-center"
+                  >
+                    <FormField
+                      name="correo"
+                      render={({ field }) => {
+                        return (
+                          <FormItem>
+                            <FormLabel>Email address</FormLabel>
+                            <FormControl>
+                              <Input
+                                className="h-[50px]"
+                                placeholder="Email address"
+                                type="email"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
+                    ></FormField>
+                    <FormField
+                      name="contrasenia"
+                      render={({ field }) => {
+                        return (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <Input
+                                className="h-[50px]"
+                                placeholder="Password"
+                                type="password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
+                    ></FormField>
+                    <a
+                      className="text-right text-xs text-[#7D7D7D]"
+                      href="/passrecover"
+                    >
+                      Forgot password?
+                    </a>
+                    {error &&
+                      error.response &&
+                      error.response.data &&
+                      error.response.data.message && (
+                        <span className="text-red-500">
+                          {error.response.data.message}
+                        </span>
+                      )}
+                    <Button type="submit" className="w-full mt-5 h-[50px]">
+                      Login
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+              {/* <CardFooter>
               <p>Card Footer</p>
             </CardFooter> */}
-          </Card>
+            </Card>
+          </div>
+          <div className="z-1 col-span-3 row-span-4 col-start-3 row-start-1 bg-[#F0CE06] border-black border-[2px] bg-cubosLogin bg-cover">
+            {/* <img alt="" srcset="src/assets/todosCubosLogin.svg" className="object-cover z-5" /> */}
+          </div>
+          <div className="z-0 col-span-3 row-span-2 col-start-3 row-start-5 bg-[#E0E5E7] border-black border-[2px] flex flex-col items-center justify-center">
+            <span className="font-bold text-[#7D7D7D] text-xl">
+              Don´t have an Account?
+              <a href="/register" className="text-black">
+                {" "}
+                Register
+              </a>
+            </span>
+          </div>
         </div>
-        <div className="z-1 col-span-3 row-span-4 col-start-3 row-start-1 bg-[#F0CE06] border-black border-[2px] bg-cubosLogin bg-cover">
-          {/* <img alt="" srcset="src/assets/todosCubosLogin.svg" className="object-cover z-5" /> */}
-        </div>
-        <div className="z-0 col-span-3 row-span-2 col-start-3 row-start-5 bg-[#E0E5E7] border-black border-[2px] flex flex-col items-center justify-center">
-          <span className="font-bold text-[#7D7D7D] text-xl">
-            Don´t have an Account?
-            <a href="/register" className="text-black">
-              {" "}
-              Register
-            </a>
-          </span>
-        </div>
-      </div>
+      )}
 
       {/* <Rectangulo w={624} h={230} color={"grey"}/>
       <Rectangulo w={624} h={78} color={"blue"}/> */}

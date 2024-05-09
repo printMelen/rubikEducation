@@ -55,7 +55,20 @@ const RubikCube = () => {
     const cubeSize = 1;
     const separation = 0.01;
     const totalCubes = 3;
-
+    let rubiksCube = [
+      // Cara frontal
+      [['green', 'green', 'green'], ['green', 'green', 'green'], ['green', 'green', 'green']],
+      // Cara trasera
+      [['blue', 'blue', 'blue'], ['blue', 'blue', 'blue'], ['blue', 'blue', 'blue']],
+      // Cara izquierda
+      [['orange', 'orange', 'orange'], ['orange', 'orange', 'orange'], ['orange', 'orange', 'orange']],
+      // Cara derecha
+      [['red', 'red', 'red'], ['red', 'red', 'red'], ['red', 'red', 'red']],
+      // Cara superior 
+      [['white', 'white', 'white'], ['white', 'white', 'white'], ['white', 'white', 'white']],
+      // Cara inferior
+      [['yellow', 'yellow', 'yellow'], ['yellow', 'yellow', 'yellow'], ['yellow', 'yellow', 'yellow']]
+  ];
     const cubeMaterials = [
       new THREE.MeshBasicMaterial({ color: 0xdf2935 }), // Right
       new THREE.MeshBasicMaterial({ color: 0xff8800 }), // Left
@@ -95,54 +108,59 @@ let faces = {
     bottom: new THREE.Group()
 };
 
-// Añadir los cubos a las caras correspondientes
 for (let x = 0; x < totalCubes; x++) {
-    for (let y = 0; y < totalCubes; y++) {
-        for (let z = 0; z < totalCubes; z++) {
-            const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-            const cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
-            cube.position.set(
-                (cubeSize + separation) * (x - (totalCubes - 1) / 2),
-                (cubeSize + separation) * (y - (totalCubes - 1) / 2),
-                (cubeSize + separation) * (z - (totalCubes - 1) / 2)
-            );
-            // Añadir el cubo a la cara correspondiente
-            if (x === 0) faces.left.add(cube);
-            if (x === totalCubes - 1) faces.right.add(cube);
-            if (y === 0) faces.bottom.add(cube);
-            if (y === totalCubes - 1) faces.top.add(cube);
-            if (z === 0) faces.front.add(cube);
-            if (z === totalCubes - 1) faces.back.add(cube);
-        }
+  for (let y = 0; y < totalCubes; y++) {
+    for (let z = 0; z < totalCubes; z++) {
+      const cubeGeometry = new THREE.BoxGeometry(
+        cubeSize,
+        cubeSize,
+        cubeSize
+      );
+      const cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
+      cube.position.set(
+        (cubeSize + separation) * (x - (totalCubes - 1) / 2),
+        (cubeSize + separation) * (y - (totalCubes - 1) / 2),
+        (cubeSize + separation) * (z - (totalCubes - 1) / 2)
+      );
+      scene.current.add(cube);
     }
+  }
 }
+// Añadir los cubos a las caras correspondientes
+// for (let x = 0; x < totalCubes; x++) {
+//     for (let y = 0; y < totalCubes; y++) {
+//         for (let z = 0; z < totalCubes; z++) {
+//             const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+//             const cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
+//             cube.position.set(
+//                 (cubeSize + separation) * (x - (totalCubes - 1) / 2),
+//                 (cubeSize + separation) * (y - (totalCubes - 1) / 2),
+//                 (cubeSize + separation) * (z - (totalCubes - 1) / 2)
+//             );
+//             // Añadir el cubo a la cara correspondiente
+//             if (x === 0) faces.left.add(cube);
+//             if (x === totalCubes - 1) faces.right.add(cube);
+//             if (y === 0) faces.bottom.add(cube);
+//             if (y === totalCubes - 1) faces.top.add(cube);
+//             if (z === 0) faces.front.add(cube);
+//             if (z === totalCubes - 1) faces.back.add(cube);
+//         }
+//     }
+// }
 
 // Añadir los grupos de caras a la escena
-Object.values(faces).forEach(face => scene.current.add(face));
+// Object.values(faces).forEach(face => scene.current.add(face));
 
 // Función para rotar una cara
-function rotateFace(face, angle) {
-    face.rotation.y += angle;
-}
+
 
 // Función para mover una cara
-function moveFace(face, direction, distance) {
-    face.position[direction] += distance;
-}
+
 
 // Ejemplo de uso
-rotateFace(faces.front, Math.PI / 4); // Rotar la cara frontal 45 grados
-moveFace(faces.front, 'x', 10); // Mover la cara frontal 10 unidades en el eje x
-
 // Renderizar la escena
 // renderer.current.render(scene.current, camera.current);
 
-// Limpiar el grupo
-Object.values(faces).forEach(face => {
-    while(face.children.length > 0){ 
-        face.remove(face.children[0]); 
-    }
-});
 
   //   function rotamosLaX(posicion, horario,divisiones) {
   //     const angle = (Math.PI / divisiones) * (horario ? 1 : -1);
@@ -264,6 +282,8 @@ Object.values(faces).forEach(face => {
 //       renderer.current.render(scene.current,camera.current);
 //   }
     // scene.current.children[26].scale.set(0.5,0.5,0.5);
+    console.log(scene.current.children[26]);
+    scene.current.children[26].rotation.x=(Math.PI / 2);
     // scene.current.children[19].scale.set(0.5,0.5,0.5);
     // console.log(scene.current.children[24]);
     // console.log("Antes de la rotacion: ");
