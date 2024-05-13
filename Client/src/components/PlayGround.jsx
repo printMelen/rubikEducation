@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import RubikCube from "./RubikCube";
+import RubikCube2 from "./RubikCube2";
 import Logo from "./Logo";
 import BotonGrande from "./BotonGrande";
 import {
@@ -9,8 +9,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const PlayGround = () => {
+  const [isOpenM, setIsOpenM] = useState(false);
   return (
     <>
       <div className="grid grid-cols-5 grid-rows-8 gap-0 h-screen font-sans">
@@ -39,19 +45,28 @@ const PlayGround = () => {
         </div>
         <div className="col-span-4 row-span-2 col-start-2 row-start-7 bg-[#E0E5E7] flex flex-row justify-end items-end">
           <div className="pr-5 pb-5">
-          <TooltipProvider delayDuration={0}>
+            <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger>
-            <BotonGrande
-              img={
-                <img
-                  srcSet="./src/assets/moves.svg"
-                  className="w-[50px]"
-                  alt="Eliminar"
-                />
-              }
-            />
-            </TooltipTrigger>
+                  <Collapsible>
+                    <CollapsibleTrigger >
+                      <BotonGrande
+                        img={
+                          <img
+                            srcSet="./src/assets/moves.svg"
+                            className="w-[50px]"
+                            alt="Moves"
+                          />
+                        }
+                      />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <div className="flex items-end mr-9 w-60">
+                          <h4>Probando</h4>
+                        </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </TooltipTrigger>
                 <TooltipContent>
                   <p>Moves</p>
                 </TooltipContent>
@@ -64,7 +79,7 @@ const PlayGround = () => {
           id="cube"
           className="col-span-3 row-span-6 col-start-2 row-start-1 bg-[#E0E5E7] border-black border-[2px]"
         >
-          <RubikCube />
+          <RubikCube2 />
         </div>
       </div>
     </>

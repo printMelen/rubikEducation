@@ -107,7 +107,7 @@ let faces = {
     top: new THREE.Group(),
     bottom: new THREE.Group()
 };
-
+let moveQueue =[];
 for (let x = 0; x < totalCubes; x++) {
   for (let y = 0; y < totalCubes; y++) {
     for (let z = 0; z < totalCubes; z++) {
@@ -126,6 +126,12 @@ for (let x = 0; x < totalCubes; x++) {
     }
   }
 }
+
+
+let pushMove = function(cube, clickVector, axis, direction) {
+  moveQueue.push({ cube: cube, vector: clickVector, axis: axis, direction: direction });
+}
+
 // Añadir los cubos a las caras correspondientes
 // for (let x = 0; x < totalCubes; x++) {
 //     for (let y = 0; y < totalCubes; y++) {
