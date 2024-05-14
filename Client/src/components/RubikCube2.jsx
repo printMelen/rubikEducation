@@ -1,9 +1,19 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect} from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as THREE from "three";
 import * as SceneUtils from "three/addons/utils/SceneUtils.js";
 
 const RubikCube2 = () => {
+  // const handleStorageChange = () => {
+  //   // Verifica si el cambio ocurrió en el localStorage
+  //   if (window.event.key === 'miLocalStorageKey') {
+  //     // Aquí puedes ejecutar la lógica que deseas cuando cambia el localStorage
+  //     console.log('El localStorage ha cambiado');
+  //   }
+  // };
+
+  // Agrega el event listener para el evento 'storage'
+  // window.addEventListener('storage', handleStorageChange);
   let container;
   const containerRef = useRef(null);
   const renderer = useRef(null);
@@ -314,23 +324,17 @@ const RubikCube2 = () => {
 
     function rotamosLaX1(posicion, horario,divisiones) {
       const angle = (Math.PI / divisiones) * (horario ? 1 : -1);
-      const quaternion= new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), angle);
-      let eje = new THREE.Vector3(1, 0, 0);
-      let cuaternionGlobal = new THREE.Quaternion();
-      cuaternionGlobal.setFromAxisAngle(eje, angle);
-      let cuaternionObjeto = new THREE.Quaternion();
+      const quaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), angle);
       
       let cubosATrasladar = [];
 
       // Rotar los cubos y agregarlos a la lista de cubos a trasladar
       scene.current.children.forEach(cuboEscena => {
         if (cuboEscena.position.x === posicion) {
-            cuaternionObjeto.multiplyQuaternions(
-          cuaternionGlobal,
-          cuboEscena.quaternion
-        );
-          // cuboEscena.applyQuaternion(quaternion);
-          cuboEscena.quaternion.copy(cuaternionObjeto);
+          cuboEscena.matrixAutoUpdate = false;
+          cuboEscena.applyQuaternion(quaternion);
+          cuboEscena.updateMatrix();
+          
           cubosATrasladar.push(cuboEscena);
         }
       });
@@ -342,9 +346,11 @@ const RubikCube2 = () => {
       });
       // Trasladar los cubos en la lista según el patrón especificado
       cubosATrasladar.forEach((cubo, index) => {
+        cubo.matrixAutoUpdate = false;
         const siguienteCuboIndex = sentidoHorarioArray[index];
         const siguienteCubo = arrayCopiaProfunda[siguienteCuboIndex];
         cubo.position.set(1.01,siguienteCubo.position.y,siguienteCubo.position.z);
+        cubo.updateMatrix();
         console.log(cubo);
         // cubo.position.x = siguienteCubo.position.x;
         // cubo.position.y = siguienteCubo.position.y;
@@ -360,8 +366,9 @@ const RubikCube2 = () => {
       // Rotar los cubos y agregarlos a la lista de cubos a trasladar
       scene.current.children.forEach(cuboEscena => {
         if (cuboEscena.position.z === posicion) {
-          
+          cuboEscena.matrixAutoUpdate = false;
           cuboEscena.applyQuaternion(quaternion);
+          cuboEscena.updateMatrix();
           
           cubosATrasladar.push(cuboEscena);
         }
@@ -374,32 +381,45 @@ const RubikCube2 = () => {
       });
       // Trasladar los cubos en la lista según el patrón especificado
       cubosATrasladar.forEach((cubo, index) => {
+        cubo.matrixAutoUpdate = false;
         const siguienteCuboIndex = sentidoHorarioArray[index];
         const siguienteCubo = arrayCopiaProfunda[siguienteCuboIndex];
         cubo.position.set(siguienteCubo.position.x,siguienteCubo.position.y,1.01);
+        cubo.updateMatrix();
         console.log(cubo);
         // cubo.position.x = siguienteCubo.position.x;
         // cubo.position.y = siguienteCubo.position.y;
       });
       animate();
     }  
+    function Rp() {
+      rotamosLaX1(1.01,true,2);
+    }
+    function R() {
+      rotamosLaX1(1.01,false,2);
+    }
+    function F() {
+      rotamosLaZ2(1.01,false,2);
+    }
     // scene.current.children[26].scale.set(0.5, 0.5, 0.5);
-    scene.current.children[17].scale.set(0.5, 0.5, 0.5);
+    // scene.current.children[17].scale.set(0.5, 0.5, 0.5);
     
     // console.log(scene.current.children[26]);
+
     
     setTimeout(() => {
       
       
       
       // rotamosLaX1(1.01,true,2);
-      rotamosLaZ2(1.01,false,2);
+      // rotamosLaZ2(1.01,false,2);
+      F();
     }, 2000);
     setTimeout(() => {
+      R();
       
 
       // rotamosLaZ2(1.01,false,2);
-      rotamosLaX1(1.01,true,2);
       setTimeout(()=>{
 
       },2000);

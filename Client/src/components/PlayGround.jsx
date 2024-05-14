@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import RubikCube2 from "./RubikCube2";
 import Logo from "./Logo";
@@ -49,7 +49,7 @@ const PlayGround = () => {
               <Tooltip>
                 <TooltipTrigger>
                   <Collapsible>
-                    <CollapsibleTrigger >
+                    <CollapsibleTrigger>
                       <BotonGrande
                         img={
                           <img
@@ -61,9 +61,63 @@ const PlayGround = () => {
                       />
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                        <div className="flex items-end mr-9 w-60">
-                          <h4>Probando</h4>
-                        </div>
+                      <div className="flex flex-col justify-between absolute bottom-[130px] w-5 gap-3 text-black text-4xl font-extrabold">
+                        <BotonGrande
+                          text="B"
+                          onClick={() => llamarFuncionDelHijo("funcionB")}
+                        />
+
+                        <BotonGrande
+                          text="U"
+                          onClick={() => llamarFuncionDelHijo("funcionU")}
+                        />
+
+                        <BotonGrande
+                          text="D"
+                          onClick={() => llamarFuncionDelHijo("funcionD")}
+                        />
+
+                        <BotonGrande
+                          text="L"
+                          onClick={() => llamarFuncionDelHijo("funcionL")}
+                        />
+
+                        <BotonGrande
+                          text="R"
+                          onClick={() => llamarFuncionDelHijo("funcionR")}
+                        />
+
+                        <BotonGrande
+                          text="F"
+                          onClick={() => llamarFuncionDelHijo("funcionF")}
+                        />
+                      </div>
+                      <div className="flex flex-row items-end absolute right-[130px] bottom-4  gap-3 text-black text-4xl font-extrabold">
+                        <BotonGrande
+                          text="B'"
+                          onClick={() => llamarFuncionDelHijo("funcionBprima")}
+                        />
+                        <BotonGrande
+                          text="U'"
+                          onClick={() => llamarFuncionDelHijo("funcionUprima")}
+                        />
+                        <BotonGrande
+                          text="D'"
+                          onClick={() => llamarFuncionDelHijo("funcionDprima")}
+                        />
+                        <BotonGrande
+                          text="L'"
+                          onClick={() => llamarFuncionDelHijo("funcionLprima")}
+                        />
+                        <BotonGrande
+                          text="R'"
+                          onClick={() => llamarFuncionDelHijo("funcionRprima")}
+                        />
+                        <BotonGrande
+                          text="F'"
+                          onClick={() => llamarFuncionDelHijo("funcionFprima")}
+                        />
+                      </div>
                     </CollapsibleContent>
                   </Collapsible>
                 </TooltipTrigger>
