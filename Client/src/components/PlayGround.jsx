@@ -21,20 +21,27 @@ const PlayGround = () => {
   const [trigger, setTrigger] = useState("");
   const { setMovimientos } = useMoves();
   const { setClue } = useClue();
+  const pista = () => {
+    let valorExistente = localStorage.getItem('cadenaRubik');
+    if (valorExistente!=null) {
+      let resultado=valorExistente.split("").reverse().join("")[0];
+      if (resultado === resultado.toLowerCase()) {
+        resultado = resultado.toUpperCase();
+    } else {
+        resultado = resultado.toLowerCase();
+    }
+      document.getElementById(resultado).classList.add("bg-[#90C290]");
+      setClue(valorExistente.split("").reverse().join("")[0]);
+    }
+  };
   const llamarFuncionDelHijo = (funcion) => {
     let valorExistente = localStorage.getItem('cadenaRubik');
-    if (valorExistente!=null&&funcion!="pista") {
+    if (valorExistente!=null) {
       localStorage.setItem('cadenaRubik', valorExistente+funcion[0]);
     }else{
       localStorage.setItem('cadenaRubik', funcion[0]);
     }
-    // let valorExistente = localStorage.getItem('cadenaRubik');
-    if (funcion=="pista"&&valorExistente!=null) {
-      console.log("Holaaa");
-      console.log(valorExistente);
-      console.log(valorExistente.split("").reverse().join("")[0]);
-      setClue(valorExistente.split("").reverse().join("")[0]);
-    }
+    
     setMovimientos(funcion); // Cambia el estado del store
   };
   // const ref = useRef();
@@ -55,7 +62,7 @@ const PlayGround = () => {
                         alt="Eliminar"
                       />
                     }
-                    onClick={() => llamarFuncionDelHijo("pista")}
+                    onClick={() => pista()}
                   />
                 </TooltipTrigger>
                 <TooltipContent>
