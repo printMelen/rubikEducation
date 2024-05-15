@@ -95,7 +95,12 @@ const PlayGround = () => {
                         <BotonGrande
                           id="B"
                           text="B"
-                          onClick={() => llamarFuncionDelHijo("B"+Date.now())}
+                          onClick={() =>{
+                            if (document.getElementById("B").classList.contains('bg-[#90C290]')) {
+                              document.getElementById("B").classList.remove('bg-[#90C290]');
+                            }
+                            llamarFuncionDelHijo("B"+Date.now())
+                          } }
                         />
 
                         <BotonGrande
