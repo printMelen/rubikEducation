@@ -114,7 +114,11 @@ const logout=(req,res)=>{
     //     return res.status(204);
     // }
     // console.log("Hola");
-    res.clearCookie("jwt");
+    res.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0) // Esto establece la fecha de expiración en el pasado
+      });
+    // res.clearCookie("jwt");
     return res.redirect("/login");
     // res.cookie('jwt','',{maxAge:1});
     // res.clearCookie('jwt',{httpOnly: true, 
