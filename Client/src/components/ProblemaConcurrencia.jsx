@@ -4,14 +4,11 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import * as TWEEN from "https://unpkg.com/@tweenjs/tween.js@20.0.3/dist/tween.esm.js";
 import React, { useRef, useEffect, useState,forwardRef, useImperativeHandle } from "react";
 import useMoves from '../store/useMoves.js';
-import useCubes from '../store/useCubes.js';
-import useClue from '../store/useClue.js';
 
 // general setup, boring, skip to the next comment
 const RubikCube2 = () => {
   const { movimientos } = useMoves();
   const [isAnimating, setIsAnimating] = useState(false);
-  const { cubes, setCubes } = useCubes();
 // const RubikCube2 = () => {
 // const RubikCube2 = forwardRef((props, ref) => {
   // useImperativeHandle(ref, () => ({
@@ -71,7 +68,7 @@ useEffect(() => {
     new THREE.MeshBasicMaterial({ color: 0x00b700 }), // Front
     new THREE.MeshBasicMaterial({ color: 0x00b4d8 }), // Back
   ];
-  let cubies = [];
+  let cubes = [];
   for( let x=-1; x<=1; x++ )
   for( let y=-1; y<=1; y++ )
   for( let z=-1; z<=1; z++ )
@@ -79,21 +76,74 @@ useEffect(() => {
       let cube = new THREE.Mesh( new RoundedBoxGeometry( ), cubeMaterials );
       cube.center = new THREE.Vector3( x, y, z );
       cube.geometry.translate( x, y, z );
-      cubies.push( cube );
+      cubes.push( cube );
   }
-  setCubes(cubies);
-  scene.add( ...cubies );
+  scene.add( ...cubes );
   
   
   // list of rotations for each side (clockwise and counterclockwise)
   
+  let rotations = [
+        function R( )  { rotate( 'XYZ', 'x',  1, -1 ) },
+        function Rprima( ) { rotate( 'XYZ', 'x',  1,  1 ) },
   
+        function L( )   { rotate( 'XYZ', 'x', -1,  1 ) },
+        function Lprima( )  { rotate( 'XYZ', 'x', -1, -1 ) },
+  
+        function U( )    { rotate( 'YZX', 'y',  1, -1 ) },
+        function Uprima( )   { rotate( 'YZX', 'y',  1,  1 ) },
+  
+        function D( ) { rotate( 'YZX', 'y', -1,  1 ) },
+        function Dprima( ){ rotate( 'YZX', 'y', -1, -1 ) },
+  
+        function F( )  { rotate( 'ZXY', 'z',  1, -1 ) },
+        function Fprima( ) { rotate( 'ZXY', 'z',  1,  1 ) },
+  
+        function B( )   { rotate( 'ZXY', 'z', -1,  1 ) },
+        function Bprima( )  { rotate( 'ZXY', 'z', -1, -1 ) },
+  ];
+  
+
+  
+  let rot = {k:0, oldK:0},
+      e = new THREE.Euler( );
+  
+  function rotate( order, axis, sign, horario )
+  {
+    setIsAnimating(true);
+      for( let cube of cubes ) if( sign*cube.center[axis] > 0.5 )
+      {
+          cube.rotation.reorder( order );
+          cube.rotation[axis] += horario * Math.PI/2 * (rot.k-rot.oldK);
+          
+          e.set( 0, 0, 0, order );
+          e[axis] += horario * Math.PI/2 * (rot.k-rot.oldK);
+          cube.center.applyEuler( e );
+      }
+      rot.oldK = rot.k;
+      setIsAnimating(false);
+  }
   
   
   // picks a random rotation, defines a tween for it and starts it
   
-  
+  function restart(movimiento)
+  {
+    if (!isAnimating) {
+      rot.k = 0;
+      rot.oldK = 0;
+      new TWEEN.Tween( rot )
+        .to( {k:1}, 700 )
+        .easing( TWEEN.Easing.Quartic.InOut )
+        .onUpdate( rotations[movimiento])
+        .start();
+    }
+  }
   // restart(1);
+  console.log("Entro😎"+movimientos);
+  let moves="RrLlUuDdFfBb";
+  let mover=moves.indexOf(movimientos);
+  restart(mover);
   
   
   function animationLoop( t )
@@ -112,67 +162,7 @@ useEffect(() => {
         controls.dispose();
     }
 };
-}, []);
-useEffect(()=>{
-  let rotations = [
-    function R( )  { rotate( 'XYZ', 'x',  1, -1 ) },
-    function Rprima( ) { rotate( 'XYZ', 'x',  1,  1 ) },
-
-    function L( )   { rotate( 'XYZ', 'x', -1,  1 ) },
-    function Lprima( )  { rotate( 'XYZ', 'x', -1, -1 ) },
-
-    function U( )    { rotate( 'YZX', 'y',  1, -1 ) },
-    function Uprima( )   { rotate( 'YZX', 'y',  1,  1 ) },
-
-    function D( ) { rotate( 'YZX', 'y', -1,  1 ) },
-    function Dprima( ){ rotate( 'YZX', 'y', -1, -1 ) },
-
-    function F( )  { rotate( 'ZXY', 'z',  1, -1 ) },
-    function Fprima( ) { rotate( 'ZXY', 'z',  1,  1 ) },
-
-    function B( )   { rotate( 'ZXY', 'z', -1,  1 ) },
-    function Bprima( )  { rotate( 'ZXY', 'z', -1, -1 ) },
-];
-
-
-
-let rot = {k:0, oldK:0},
-  e = new THREE.Euler( );
-
-function rotate( order, axis, sign, horario )
-{
-setIsAnimating(true);
-  for( let cube of cubes ) if( sign*cube.center[axis] > 0.5 )
-  {
-      cube.rotation.reorder( order );
-      cube.rotation[axis] += horario * Math.PI/2 * (rot.k-rot.oldK);
-      
-      e.set( 0, 0, 0, order );
-      e[axis] += horario * Math.PI/2 * (rot.k-rot.oldK);
-      cube.center.applyEuler( e );
-  }
-  rot.oldK = rot.k;
-  setIsAnimating(false);
-}
-  function restart(movimiento)
-  {
-    if (!isAnimating) {
-      rot.k = 0;
-      rot.oldK = 0;
-      new TWEEN.Tween( rot )
-        .to( {k:1}, 700 )
-        .easing( TWEEN.Easing.Quartic.InOut )
-        .onUpdate( rotations[movimiento])
-        .start();
-    }
-  }
-  console.log(movimientos);
-  console.log("Entro😎"+movimientos);
-  let moves="RrLlUuDdFfBb";
-  let mover=moves.indexOf(movimientos[0]);
-  restart(mover);
-  
-},[movimientos]);
+}, [movimientos]);
 return <div ref={containerRef} />;
 };
 // });
