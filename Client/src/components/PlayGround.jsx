@@ -1,8 +1,14 @@
-import React, { useState, useEffect,forwardRef, useImperativeHandle, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import { Button } from "@/components/ui/button";
 import RubikCube2 from "./RubikCube2";
-import useMoves from '../store/useMoves.js';
-import useClue from '../store/useClue.js';
+import useMoves from "../store/useMoves.js";
+import useClue from "../store/useClue.js";
 import Logo from "./Logo";
 import BotonGrande from "./BotonGrande";
 import {
@@ -22,26 +28,26 @@ const PlayGround = () => {
   const { setMovimientos } = useMoves();
   const { setClue } = useClue();
   const pista = () => {
-    let valorExistente = localStorage.getItem('cadenaRubik');
-    if (valorExistente!=null) {
-      let resultado=valorExistente.split("").reverse().join("")[0];
+    let valorExistente = localStorage.getItem("cadenaRubik");
+    if (valorExistente != null) {
+      let resultado = valorExistente.split("").reverse().join("")[0];
       if (resultado === resultado.toLowerCase()) {
         resultado = resultado.toUpperCase();
-    } else {
+      } else {
         resultado = resultado.toLowerCase();
-    }
+      }
       document.getElementById(resultado).classList.add("bg-[#90C290]");
       setClue(valorExistente.split("").reverse().join("")[0]);
     }
   };
   const llamarFuncionDelHijo = (funcion) => {
-    let valorExistente = localStorage.getItem('cadenaRubik');
-    if (valorExistente!=null) {
-      localStorage.setItem('cadenaRubik', valorExistente+funcion[0]);
-    }else{
-      localStorage.setItem('cadenaRubik', funcion[0]);
+    let valorExistente = localStorage.getItem("cadenaRubik");
+    if (valorExistente != null) {
+      localStorage.setItem("cadenaRubik", valorExistente + funcion[0]);
+    } else {
+      localStorage.setItem("cadenaRubik", funcion[0]);
     }
-    
+
     setMovimientos(funcion); // Cambia el estado del store
   };
   // const ref = useRef();
@@ -95,74 +101,205 @@ const PlayGround = () => {
                         <BotonGrande
                           id="B"
                           text="B"
-                          onClick={() =>{
-                            if (document.getElementById("B").classList.contains('bg-[#90C290]')) {
-                              document.getElementById("B").classList.remove('bg-[#90C290]');
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("B")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("B")
+                                .classList.remove("bg-[#90C290]");
                             }
-                            llamarFuncionDelHijo("B"+Date.now())
-                          } }
+                            llamarFuncionDelHijo("B" + Date.now());
+                          }}
                         />
 
                         <BotonGrande
                           id="U"
                           text="U"
-                          onClick={() => llamarFuncionDelHijo("U"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("U")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("U")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("U" + Date.now());
+                          }}
                         />
 
                         <BotonGrande
                           id="D"
                           text="D"
-                          onClick={() => llamarFuncionDelHijo("D"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("D")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("D")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("D" + Date.now());
+                          }}
                         />
 
                         <BotonGrande
                           id="L"
                           text="L"
-                          onClick={() => llamarFuncionDelHijo("L"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("L")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("L")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("L" + Date.now());
+                          }}
                         />
 
                         <BotonGrande
                           id="R"
                           text="R"
-                          onClick={() => llamarFuncionDelHijo("R"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("R")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("R")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("R" + Date.now());
+                          }}
                         />
 
                         <BotonGrande
                           id="F"
                           text="F"
-                          onClick={() => llamarFuncionDelHijo("F"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("F")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("F")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("F" + Date.now());
+                          }}
                         />
                       </div>
                       <div className="flex flex-row items-end absolute right-[130px] bottom-4  gap-3 text-black text-4xl font-extrabold">
-                        <BotonGrande
+                      <BotonGrande
                           id="b"
                           text="B'"
-                          onClick={() => llamarFuncionDelHijo("b"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("b")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("b")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("b" + Date.now());
+                          }}
                         />
                         <BotonGrande
                           id="u"
                           text="U'"
-                          onClick={() => llamarFuncionDelHijo("u"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("u")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("u")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("u" + Date.now());
+                          }}
                         />
+
                         <BotonGrande
                           id="d"
                           text="D'"
-                          onClick={() => llamarFuncionDelHijo("d"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("d")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("d")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("d" + Date.now());
+                          }}
                         />
+
                         <BotonGrande
                           id="l"
                           text="L'"
-                          onClick={() => llamarFuncionDelHijo("l"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("l")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("l")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("l" + Date.now());
+                          }}
                         />
+
                         <BotonGrande
                           id="r"
                           text="R'"
-                          onClick={() => llamarFuncionDelHijo("r"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("r")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("r")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("r" + Date.now());
+                          }}
                         />
+
                         <BotonGrande
                           id="f"
                           text="F'"
-                          onClick={() => llamarFuncionDelHijo("f"+Date.now())}
+                          onClick={() => {
+                            if (
+                              document
+                                .getElementById("f")
+                                .classList.contains("bg-[#90C290]")
+                            ) {
+                              document
+                                .getElementById("f")
+                                .classList.remove("bg-[#90C290]");
+                            }
+                            llamarFuncionDelHijo("f" + Date.now());
+                          }}
                         />
                       </div>
                     </CollapsibleContent>
