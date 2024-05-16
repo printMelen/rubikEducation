@@ -8,6 +8,7 @@ import React, {
 import { Button } from "@/components/ui/button";
 import RubikCube2 from "./RubikCube2";
 import useMoves from "../store/useMoves.js";
+import useRandom from "../store/useRandom.js";
 import useClue from "../store/useClue.js";
 import Logo from "./Logo";
 import BotonGrande from "./BotonGrande";
@@ -17,16 +18,36 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Toaster } from "@/components/ui/toaster";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import useSolve from '../store/useSolve.js';
 
 const PlayGround = () => {
   const [trigger, setTrigger] = useState("");
   const { setMovimientos } = useMoves();
+  const { setRandom } = useRandom();
+  const { solve, setSolve } = useSolve();
+  const [open, setOpen] = React.useState(false)
+  // const [seed, setSeed] = useState();
   const { setClue } = useClue();
+  const { toast } = useToast();
+  const solveFun =() =>{
+    setSolve(true);
+  }
   const pista = () => {
     let valorExistente = localStorage.getItem("cadenaRubik");
     if (valorExistente != null) {
@@ -50,6 +71,24 @@ const PlayGround = () => {
 
     setMovimientos(funcion); // Cambia el estado del store
   };
+  const nuevoCubo = () => {
+    // setNuevo(true);
+    // this.forceUpdate();
+    window.location.reload(false);
+    // setSeed(Date.now())
+  };
+  const randomize = () => {
+    let valorExistente = localStorage.getItem("cadenaRubik");
+    if (valorExistente == null) {
+      setRandom(true);
+    } else {
+      toast({
+        title: "Error",
+        description:
+          "Para randomizar el cubo este ha de ser nuevo. Crea un cubo nuevo en el botón con el +",
+      });
+    }
+  };
   // const ref = useRef();
   return (
     <>
@@ -60,16 +99,53 @@ const PlayGround = () => {
             <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger>
-                  <BotonGrande
-                    img={
-                      <img
-                        srcSet="./src/assets/pista.svg"
-                        className="w-[40px]"
-                        alt="Eliminar"
-                      />
-                    }
-                    onClick={() => pista()}
-                  />
+                  <div className="flex flex-col gap-3">
+                    <BotonGrande
+                      img={
+                        <img
+                          srcSet="./src/assets/plus-solid.svg"
+                          className="w-[40px]"
+                          alt="Cruz"
+                        />
+                      }
+                      onClick={() => nuevoCubo()}
+                    />
+                    <BotonGrande
+                      img={
+                        <img
+                          srcSet="./src/assets/shuffle-solid.svg"
+                          className="w-[40px]"
+                          alt="Randomizar"
+                        />
+                      }
+                      onClick={() => randomize()}
+                    />
+                    <Dialog open={open} onOpenChange={setOpen}>
+                      <DialogTrigger>
+                      <BotonGrande
+                      img={
+                        <img
+                          srcSet="./src/assets/pista.svg"
+                          className="w-[40px]"
+                          alt="Pista"
+                        />
+                      }
+                      onClick={() => pista()}
+                    />
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Have you asked for help?</DialogTitle>
+                          <DialogDescription>
+                            If you want just to know the next move press the next move button.
+                            If you want us to solve the cube press the solve button.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <Button onClick={() => { setOpen(false);  }}>Next move</Button>
+                        <Button onClick={() => {  setOpen(false); solveFun(); }}>Solve</Button>
+                      </DialogContent>
+                    </Dialog>                    
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Clue</p>
@@ -201,7 +277,7 @@ const PlayGround = () => {
                         />
                       </div>
                       <div className="flex flex-row items-end absolute right-[130px] bottom-4  gap-3 text-black text-4xl font-extrabold">
-                      <BotonGrande
+                        <BotonGrande
                           id="b"
                           text="B'"
                           onClick={() => {
@@ -320,6 +396,7 @@ const PlayGround = () => {
           <RubikCube2 />
         </div>
       </div>
+      <Toaster />
     </>
   );
 };

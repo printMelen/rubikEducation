@@ -5,13 +5,21 @@ import * as TWEEN from "https://unpkg.com/@tweenjs/tween.js@20.0.3/dist/tween.es
 import React, { useRef, useEffect, useState,forwardRef, useImperativeHandle } from "react";
 import useMoves from '../store/useMoves.js';
 import useCubes from '../store/useCubes.js';
+import useRandom from '../store/useRandom.js';
+import useSolve from '../store/useSolve.js';
+
 import useClue from '../store/useClue.js';
+
+// import Cube from "./cube.js";
 
 // general setup, boring, skip to the next comment
 const RubikCube2 = () => {
   const { movimientos } = useMoves();
+  const { random,setRandom } = useRandom();
   const [isAnimating, setIsAnimating] = useState(false);
   const { cubes, setCubes } = useCubes();
+  const { solve, setSolve } = useSolve();
+
 // const RubikCube2 = () => {
 // const RubikCube2 = forwardRef((props, ref) => {
   // useImperativeHandle(ref, () => ({
@@ -19,7 +27,7 @@ const RubikCube2 = () => {
       //     console.log("child function");
       //   }
       // }));
-      console.clear( );
+      // console.clear( );
       const containerRef = useRef(null);
       // let containerRef;
 let container;
@@ -83,8 +91,11 @@ useEffect(() => {
   }
   setCubes(cubies);
   scene.add( ...cubies );
-  
-  
+  localStorage.removeItem("cadenaRubik");
+  // if (nuevo) {
+  //   setCubes([]);
+  // }
+  // setNuevo(false);
   // list of rotations for each side (clockwise and counterclockwise)
   
   
@@ -166,13 +177,134 @@ setIsAnimating(true);
         .start();
     }
   }
+  function automaticMove(result) {
+    let moves="RrLlUuDdFfBb";
+    result.split("").forEach((move, index) => {
+      setTimeout(() => {
+      let valorExistente = localStorage.getItem("cadenaRubik");
+        if (valorExistente != null) {
+          localStorage.setItem("cadenaRubik", valorExistente + move);
+        } else {
+          localStorage.setItem("cadenaRubik", move);
+        }
+        let mover=moves.indexOf(move);
+        restart(mover);
+      }, 1000 * index);
+    });
+  }
+  async function solveFun(){
+    const bodyData = {
+      moves: 20,
+    };
+    
+    // Opciones de configuración para la solicitud fetch
+    const fetchOptions = {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json' // Tipo de contenido del cuerpo (en este caso, JSON)
+      },
+      body: JSON.stringify(bodyData) // Convertir los datos del cuerpo a formato JSON
+    };
+    const response = await fetch("http://localhost:5000/rubik/solve", fetchOptions);
+
+    if (!response.ok) {
+      throw new Error('Error en la solicitud: ' + response.statusText);
+    }
+
+    // Convertir la respuesta a JSON y retornar los datos
+    const data = await response.json();
+
+    // Acceder a la propiedad 'result' del objeto devuelto por el fetch
+    const result = data.result;
+    automaticMove(result);
+    setSolve(false);
+  }
+  async function shuffle(){
+    let valorExistente = localStorage.getItem("cadenaRubik");
+    const bodyData = {
+      numMoves: valorExistente,
+    };
+    
+    // Opciones de configuración para la solicitud fetch
+    const fetchOptions = {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json' // Tipo de contenido del cuerpo (en este caso, JSON)
+      },
+      body: JSON.stringify(bodyData) // Convertir los datos del cuerpo a formato JSON
+    };
+    const response = await fetch("http://localhost:5000/rubik/random", fetchOptions);
+
+    if (!response.ok) {
+      throw new Error('Error en la solicitud: ' + response.statusText);
+    }
+
+    // Convertir la respuesta a JSON y retornar los datos
+    const data = await response.json();
+
+    console.log(data);
+    // Acceder a la propiedad 'result' del objeto devuelto por el fetch
+    const result = data.result;
+    // setNuevo(false);
+    // const MOVES = [
+    //   "U",
+    //   "u",
+    //   "U U",
+    //   "D",
+    //   "d",
+    //   "D D",
+    //   "L",
+    //   "l",
+    //   "L L",
+    //   "R",
+    //   "r",
+    //   "R R",
+    //   "F",
+    //   "f",
+    //   "F F",
+    //   "B",
+    //   "b",
+    //   "B B",
+    // ];
+    // const NUM_MOVES = 20; // El número de movimientos que quieres generar
+    
+    // let scramble = "";
+    // for (let i = 0; i < NUM_MOVES; i++) {
+    //   const move = MOVES[Math.floor(Math.random() * MOVES.length)];
+    //   scramble += move +" ";
+    // }
+    // let arrayDatos=datos.result;
+    // console.log(arrayDatos);
+    let moves="RrLlUuDdFfBb";
+    result.split("").forEach((move, index) => {
+      setTimeout(() => {
+      let valorExistente = localStorage.getItem("cadenaRubik");
+        if (valorExistente != null) {
+          localStorage.setItem("cadenaRubik", valorExistente + move);
+        } else {
+          localStorage.setItem("cadenaRubik", move);
+        }
+        let mover=moves.indexOf(move);
+        restart(mover);
+      }, 1000 * index);
+    });
+    // automaticMove(result);
+    setRandom(false);
+  }
+  if (random) {
+    console.log("Holita");
+    shuffle();
+  }
+  if (solve) {
+    solveFun();
+  }
   console.log(movimientos);
   console.log("Entro😎"+movimientos);
   let moves="RrLlUuDdFfBb";
   let mover=moves.indexOf(movimientos[0]);
   restart(mover);
   
-},[movimientos]);
+},[movimientos, random]);
 return <div ref={containerRef} />;
 };
 // });
