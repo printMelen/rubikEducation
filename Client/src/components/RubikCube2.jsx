@@ -193,8 +193,10 @@ setIsAnimating(true);
     });
   }
   async function solveFun(){
+    let valorExistente = localStorage.getItem("cadenaRubik");
+
     const bodyData = {
-      moves: 20,
+      moves: valorExistente,
     };
     
     // Opciones de configuración para la solicitud fetch
@@ -220,9 +222,8 @@ setIsAnimating(true);
     setSolve(false);
   }
   async function shuffle(){
-    let valorExistente = localStorage.getItem("cadenaRubik");
     const bodyData = {
-      numMoves: valorExistente,
+      numMoves: 20,
     };
     
     // Opciones de configuración para la solicitud fetch
@@ -275,20 +276,8 @@ setIsAnimating(true);
     // }
     // let arrayDatos=datos.result;
     // console.log(arrayDatos);
-    let moves="RrLlUuDdFfBb";
-    result.split("").forEach((move, index) => {
-      setTimeout(() => {
-      let valorExistente = localStorage.getItem("cadenaRubik");
-        if (valorExistente != null) {
-          localStorage.setItem("cadenaRubik", valorExistente + move);
-        } else {
-          localStorage.setItem("cadenaRubik", move);
-        }
-        let mover=moves.indexOf(move);
-        restart(mover);
-      }, 1000 * index);
-    });
-    // automaticMove(result);
+    
+    automaticMove(result);
     setRandom(false);
   }
   if (random) {
@@ -298,13 +287,15 @@ setIsAnimating(true);
   if (solve) {
     solveFun();
   }
-  console.log(movimientos);
-  console.log("Entro😎"+movimientos);
-  let moves="RrLlUuDdFfBb";
-  let mover=moves.indexOf(movimientos[0]);
-  restart(mover);
+  if (!solve&&!random) {
+    console.log(movimientos);
+    console.log("Entro😎"+movimientos);
+    let moves="RrLlUuDdFfBb";
+    let mover=moves.indexOf(movimientos[0]);
+    restart(mover);
+  }
   
-},[movimientos, random]);
+},[movimientos, random, solve]);
 return <div ref={containerRef} />;
 };
 // });

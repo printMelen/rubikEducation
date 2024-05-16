@@ -54,10 +54,10 @@ function revertirTransformacion(cadena) {
 }
 const randomize=(req,res)=>{
     const result = scrambled.generateScrambleSync(req.body.numMoves); // Generate a scramble with 30 moves
-    // console.log(result.scramble);
+    console.log(result.scramble);
     
     let cadenaRandom=transformarCadena(result.scramble);
-    // console.log(cadenaRandom);
+    console.log(cadenaRandom);
     // console.log(revertirTransformacion(transformarCadena(result.scramble)));
     return res.status(200).json({
         message: "Cubo randomizado correctamente",
