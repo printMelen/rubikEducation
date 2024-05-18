@@ -179,18 +179,27 @@ setIsAnimating(true);
   }
   function automaticMove(result) {
     let moves="RrLlUuDdFfBb";
-    result.split("").forEach((move, index) => {
-      setTimeout(() => {
+  let movesArray = result.split("");
+
+  // Mapea cada movimiento a una promesa que se resuelve después del setTimeout
+  let promises = movesArray.map((move, index) => new Promise(resolve => {
+    setTimeout(() => {
       let valorExistente = localStorage.getItem("cadenaRubik");
-        if (valorExistente != null) {
-          localStorage.setItem("cadenaRubik", valorExistente + move);
-        } else {
-          localStorage.setItem("cadenaRubik", move);
-        }
-        let mover=moves.indexOf(move);
-        restart(mover);
-      }, 1000 * index);
-    });
+      if (valorExistente != null) {
+        localStorage.setItem("cadenaRubik", valorExistente + move);
+      } else {
+        localStorage.setItem("cadenaRubik", move);
+      }
+      let mover=moves.indexOf(move);
+      restart(mover);
+
+      // Resuelve la promesa para este movimiento
+      resolve();
+    }, 1000 * index);
+  }));
+
+  // Devuelve una promesa que se resuelve cuando todas las promesas de movimiento se han resuelto
+  return Promise.all(promises);
   }
   async function solveFun(){
     let valorExistente = localStorage.getItem("cadenaRubik");
@@ -218,7 +227,8 @@ setIsAnimating(true);
 
     // Acceder a la propiedad 'result' del objeto devuelto por el fetch
     const result = data.result;
-    automaticMove(result);
+    await automaticMove(result);
+    localStorage.removeItem("cadenaRubik");
     setSolve(false);
   }
   async function shuffle(){
@@ -246,38 +256,9 @@ setIsAnimating(true);
     console.log(data);
     // Acceder a la propiedad 'result' del objeto devuelto por el fetch
     const result = data.result;
-    // setNuevo(false);
-    // const MOVES = [
-    //   "U",
-    //   "u",
-    //   "U U",
-    //   "D",
-    //   "d",
-    //   "D D",
-    //   "L",
-    //   "l",
-    //   "L L",
-    //   "R",
-    //   "r",
-    //   "R R",
-    //   "F",
-    //   "f",
-    //   "F F",
-    //   "B",
-    //   "b",
-    //   "B B",
-    // ];
-    // const NUM_MOVES = 20; // El número de movimientos que quieres generar
     
-    // let scramble = "";
-    // for (let i = 0; i < NUM_MOVES; i++) {
-    //   const move = MOVES[Math.floor(Math.random() * MOVES.length)];
-    //   scramble += move +" ";
-    // }
-    // let arrayDatos=datos.result;
-    // console.log(arrayDatos);
     
-    automaticMove(result);
+    await automaticMove(result);
     setRandom(false);
   }
   if (random) {
@@ -287,11 +268,15 @@ setIsAnimating(true);
   if (solve) {
     solveFun();
   }
+  // async function mover(movimientos){
+  //   await automaticMove(movimientos);
+  // }
   if (!solve&&!random) {
-    console.log(movimientos);
-    console.log("Entro😎"+movimientos);
+    // console.log(movimientos);
+    // console.log("Entro😎"+movimientos);
     let moves="RrLlUuDdFfBb";
     let mover=moves.indexOf(movimientos[0]);
+    // mover(movimientos[0]);
     restart(mover);
   }
   

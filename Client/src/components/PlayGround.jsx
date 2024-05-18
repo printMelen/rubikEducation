@@ -39,7 +39,7 @@ import useSolve from '../store/useSolve.js';
 const PlayGround = () => {
   const [trigger, setTrigger] = useState("");
   const { setMovimientos } = useMoves();
-  const { setRandom } = useRandom();
+  const { random,setRandom } = useRandom();
   const { solve, setSolve } = useSolve();
   const [open, setOpen] = React.useState(false)
   // const [seed, setSeed] = useState();
@@ -62,14 +62,16 @@ const PlayGround = () => {
     }
   };
   const llamarFuncionDelHijo = (funcion) => {
-    let valorExistente = localStorage.getItem("cadenaRubik");
-    if (valorExistente != null) {
-      localStorage.setItem("cadenaRubik", valorExistente + funcion[0]);
-    } else {
-      localStorage.setItem("cadenaRubik", funcion[0]);
+    if (!random&&!solve) {
+      let valorExistente = localStorage.getItem("cadenaRubik");
+      if (valorExistente != null) {
+        localStorage.setItem("cadenaRubik", valorExistente + funcion[0]);
+      } else {
+        localStorage.setItem("cadenaRubik", funcion[0]);
+      }
+  
+      setMovimientos(funcion); // Cambia el estado del store
     }
-
-    setMovimientos(funcion); // Cambia el estado del store
   };
   const nuevoCubo = () => {
     // setNuevo(true);
