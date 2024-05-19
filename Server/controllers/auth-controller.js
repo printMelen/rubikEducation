@@ -72,6 +72,12 @@ const login = async (req, res, next) => {
     //     // sameSite: 'None',
     //     // maxAge: 7*24*60*60*1000,
     // });
+    res.cookie('accessToken', token, {
+        path: '/',
+        secure: true,
+        sameSite: 'None',
+        maxAge: 5 * 60 * 1000, // 5 minutes
+    });
     res.cookie('jwt', refreshToken, {
         path: '/',
         httpOnly: true,
@@ -121,6 +127,12 @@ const logout=(req,res)=>{
     //     return res.status(204);
     // }
     // console.log("Hola");
+    res.cookie('accessToken', '', {
+        path: '/',
+        secure: true,
+        sameSite: 'None',
+        expires: new Date(0), // Esto establece la fecha de expiración en el pasado
+    });
     res.cookie('jwt', '', {
         path: '/',
         httpOnly: true,
@@ -133,6 +145,7 @@ const logout=(req,res)=>{
     //     expires: new Date(0) // Esto establece la fecha de expiración en el pasado
     //   });
     res.clearCookie("jwt");
+    res.clearCookie("accessToken");
     // console.log("despues del jwt");
     return res.redirect("/login");
     // res.cookie('jwt','',{maxAge:1});

@@ -69,11 +69,11 @@ const Login = () => {
         const token = respuesta.data.token; // Supongamos que la API devuelve un token
         // await useAuth();
         // console.log("EEEEY");
-        console.log(token);
-        let expires=new Date();
-        expires.setTime(expires.getTime() + 5 * 60 * 1000);
-        expires = "expires=" + expires.toUTCString();
-        document.cookie = "accessToken" + "=" + token + ";" + expires + ";path=/;";
+        // console.log(token);
+        // let expires=new Date();
+        // expires.setTime(expires.getTime() + 5 * 60 * 1000);
+        // expires = "expires=" + expires.toUTCString();
+        // document.cookie = "accessToken" + "=" + token + ";" + expires + ";path=/;";
         // Almacenar el token en el estado usando Zustand
         // setToken(token);
       } else {
