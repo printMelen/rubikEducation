@@ -65,6 +65,7 @@ const randomize=(req,res)=>{
     });
 }
 const solve=(req,res)=>{
+    console.log(req.body.moves);
     const cube = new Cube();
     cube.move(revertirTransformacion(req.body.moves));
     Cube.initSolver();

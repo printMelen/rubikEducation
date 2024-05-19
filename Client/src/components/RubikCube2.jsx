@@ -92,19 +92,6 @@ useEffect(() => {
   setCubes(cubies);
   scene.add( ...cubies );
   localStorage.removeItem("cadenaRubik");
-  // if (nuevo) {
-  //   setCubes([]);
-  // }
-  // setNuevo(false);
-  // list of rotations for each side (clockwise and counterclockwise)
-  
-  
-  
-  
-  // picks a random rotation, defines a tween for it and starts it
-  
-  
-  // restart(1);
   
   
   function animationLoop( t )
@@ -179,6 +166,11 @@ setIsAnimating(true);
   }
   function automaticMove(result) {
     let moves="RrLlUuDdFfBb";
+    // if (result.length<=1) {
+      
+    // }else{
+      
+    // }
   let movesArray = result.split("");
 
   // Mapea cada movimiento a una promesa que se resuelve después del setTimeout
@@ -190,14 +182,15 @@ setIsAnimating(true);
       } else {
         localStorage.setItem("cadenaRubik", move);
       }
+      console.log(move);
       let mover=moves.indexOf(move);
       restart(mover);
 
       // Resuelve la promesa para este movimiento
       resolve();
     }, 1000 * index);
+    
   }));
-
   // Devuelve una promesa que se resuelve cuando todas las promesas de movimiento se han resuelto
   return Promise.all(promises);
   }
@@ -268,14 +261,15 @@ setIsAnimating(true);
   if (solve) {
     solveFun();
   }
-  // async function mover(movimientos){
-  //   await automaticMove(movimientos);
-  // }
+  async function mover(movimientos){
+    await automaticMove(movimientos);
+  }
   if (!solve&&!random) {
     // console.log(movimientos);
     // console.log("Entro😎"+movimientos);
     let moves="RrLlUuDdFfBb";
     let mover=moves.indexOf(movimientos[0]);
+    // console.log(movimientos[0]);
     // mover(movimientos[0]);
     restart(mover);
   }

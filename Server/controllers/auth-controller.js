@@ -63,14 +63,21 @@ const login = async (req, res, next) => {
     //     httpOnly: true,
     //     sameSite: 'lax'
     // });
+    // res.cookie('jwt', refreshToken, {
+    //     // path: '/',
+    //     // expires: new Date(Date.now() + 1000 * 30),
+    //     expiresIn: 1000 * 60 * 60 * 7,
+    //     httpOnly: true,
+    //     // secure: true,
+    //     // sameSite: 'None',
+    //     // maxAge: 7*24*60*60*1000,
+    // });
     res.cookie('jwt', refreshToken, {
-        // path: '/',
-        // expires: new Date(Date.now() + 1000 * 30),
-        expiresIn: 1000 * 60 * 60 * 7,
+        path: '/',
         httpOnly: true,
-        // secure: true,
-        // sameSite: 'None',
-        // maxAge: 7*24*60*60*1000,
+        secure: true,
+        sameSite: 'None',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     return res.status(200).json({
@@ -108,17 +115,25 @@ const refresh= (req, res)=>{
 }
 
 const logout=(req,res)=>{
-    const jwt = req.cookies.jwt;
-    console.log(jwt);
+    // const jwt = req.cookies.jwt;
+    // console.log(jwt);
     // if (!cookies?.jwt) {
     //     return res.status(204);
     // }
     // console.log("Hola");
     res.cookie('jwt', '', {
+        path: '/',
         httpOnly: true,
-        expires: new Date(0) // Esto establece la fecha de expiración en el pasado
-      });
-    // res.clearCookie("jwt");
+        secure: true,
+        sameSite: 'None',
+        expires: new Date(0), // Esto establece la fecha de expiración en el pasado
+    });
+    // res.cookie('jwt', '', {
+    //     httpOnly: true,
+    //     expires: new Date(0) // Esto establece la fecha de expiración en el pasado
+    //   });
+    res.clearCookie("jwt");
+    // console.log("despues del jwt");
     return res.redirect("/login");
     // res.cookie('jwt','',{maxAge:1});
     // res.clearCookie('jwt',{httpOnly: true, 

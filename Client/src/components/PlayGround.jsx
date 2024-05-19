@@ -64,11 +64,13 @@ const PlayGround = () => {
   const llamarFuncionDelHijo = (funcion) => {
     if (!random&&!solve) {
       let valorExistente = localStorage.getItem("cadenaRubik");
+      // console.log(valorExistente);
       if (valorExistente != null) {
         localStorage.setItem("cadenaRubik", valorExistente + funcion[0]);
       } else {
         localStorage.setItem("cadenaRubik", funcion[0]);
       }
+      // console.log(valorExistente);
   
       setMovimientos(funcion); // Cambia el estado del store
     }

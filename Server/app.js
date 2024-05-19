@@ -23,9 +23,9 @@ const app = express();
 // const randomCube = Cube.random();
 
 // console.log(randomCube);
-// app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: true}));
 app.use(cors({
-    origin: 'http://localhost:5174',
+    origin: 'http://localhost:5173',
     credentials: true // Si estás enviando cookies con la solicitud
   }));
   
@@ -35,20 +35,20 @@ app.use('/auth',require('./routes/auth-routes'));
 app.use('/api',router);
 app.use('/rubik',rubikRouter);
 // console.log(process.env.DATABASE_URL);
-// mongoose
-// .connect(process.env.DATABASE_URL)
-// .then(()=>{
-//     app.listen(5000);
-//     console.log("Database conectada 😎");
-// }).catch((err)=>{
-//     console.log(err);
-// });
+mongoose
+.connect(process.env.DATABASE_URL)
+.then(()=>{
+    app.listen(5000);
+    console.log("Database conectada 😎");
+}).catch((err)=>{
+    console.log(err);
+});
 
-// app.use('/',(req, res, next)=>{
-//     res.send("Wenas");
-// });
+app.use('/',(req, res, next)=>{
+    res.send("Wenas");
+});
 
-app.listen(5000,()=>{
-    console.log("Escuchando en el 5k");
-})
+// app.listen(5000,()=>{
+//     console.log("Escuchando en el 5k");
+// })
 // f6Y0W8GzNyiQXxiG

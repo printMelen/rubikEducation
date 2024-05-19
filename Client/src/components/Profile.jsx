@@ -12,12 +12,12 @@ const Profile = () => {
   console.log(jwt);
   async function logout() {
     // console.log("Etro");
-    Cookies.remove('accessToken');
     const respuesta = await axios
-      .post("http://localhost:5000/auth/logout",{
-        cookies:accessToken
-      });
+    .post("http://localhost:5000/auth/logout",{
+      cookies:accessToken
+    });
     if (respuesta.status === 200) {
+      Cookies.remove('accessToken');
       return navigate("/login");
     }
   }
