@@ -14,10 +14,11 @@ import useClue from '../store/useClue.js';
 
 // general setup, boring, skip to the next comment
 const RubikCube2 = () => {
-  const { movimientos } = useMoves();
+  const { movimientos,setMovimientos } = useMoves();
   const { random,setRandom } = useRandom();
   const [isAnimating, setIsAnimating] = useState(false);
   const { cubes, setCubes } = useCubes();
+  const { clue, setClue } = useClue();
   const { solve, setSolve } = useSolve();
 
 // const RubikCube2 = () => {
@@ -219,9 +220,15 @@ setIsAnimating(true);
     const data = await response.json();
 
     // Acceder a la propiedad 'result' del objeto devuelto por el fetch
-    const result = data.result;
-    await automaticMove(result);
-    localStorage.removeItem("cadenaRubik");
+    if (clue) {
+      const result = data.result;
+      await automaticMove(result[0]);
+      setClue(false);
+    }else{
+      const result = data.result;
+      await automaticMove(result);
+      localStorage.removeItem("cadenaRubik");
+    }
     setSolve(false);
   }
   async function shuffle(){
@@ -272,6 +279,7 @@ setIsAnimating(true);
     // console.log(movimientos[0]);
     // mover(movimientos[0]);
     restart(mover);
+    setMovimientos("");
   }
   
 },[movimientos, random, solve]);

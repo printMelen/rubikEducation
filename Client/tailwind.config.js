@@ -15,6 +15,7 @@ module.exports = {
     backgroundImage: {
       'cubosLogin': "url('src/assets/todosCubosLogin.svg')",
       'cubosPassRecover': "url('src/assets/desordenGrupo.svg')",
+      'cubosRegister': "url('src/assets/grupoRegister.svg')",
       // 'footer-texture': "url('/img/footer-texture.png')",
     },
     fontFamily: {

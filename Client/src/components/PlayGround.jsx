@@ -49,17 +49,8 @@ const PlayGround = () => {
     setSolve(true);
   }
   const pista = () => {
-    let valorExistente = localStorage.getItem("cadenaRubik");
-    if (valorExistente != null) {
-      let resultado = valorExistente.split("").reverse().join("")[0];
-      if (resultado === resultado.toLowerCase()) {
-        resultado = resultado.toUpperCase();
-      } else {
-        resultado = resultado.toLowerCase();
-      }
-      document.getElementById(resultado).classList.add("bg-[#90C290]");
-      setClue(valorExistente.split("").reverse().join("")[0]);
-    }
+    setClue(true);
+    setSolve(true);
   };
   const llamarFuncionDelHijo = (funcion) => {
     if (!random&&!solve) {
@@ -134,7 +125,6 @@ const PlayGround = () => {
                           alt="Pista"
                         />
                       }
-                      onClick={() => pista()}
                     />
                       </DialogTrigger>
                       <DialogContent>
@@ -145,7 +135,7 @@ const PlayGround = () => {
                             If you want us to solve the cube press the solve button.
                           </DialogDescription>
                         </DialogHeader>
-                        <Button onClick={() => { setOpen(false);  }}>Next move</Button>
+                        <Button onClick={() => { setOpen(false); pista(); }}>Next move</Button>
                         <Button onClick={() => {  setOpen(false); solveFun(); }}>Solve</Button>
                       </DialogContent>
                     </Dialog>                    
