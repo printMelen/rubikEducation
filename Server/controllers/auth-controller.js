@@ -83,7 +83,9 @@ const login = async (req, res, next) => {
         httpOnly: true,
         secure: true,
         sameSite: 'None',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        maxAge: 2 * 60 * 1000, // 5 minutes
+        // maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        // maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     return res.status(200).json({
@@ -99,12 +101,14 @@ const refresh= (req, res)=>{
         return res.status(401).json({message: 'No autorizado'});
     }
     const refreshToken=cookies.jwt;
-    console.log(refreshToken);
+    // console.log(refreshToken);
     jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET,asyncHandler(async(err,decoded)=>{
         if (err) {
             return res.status(403).json({message:"Prohibido"});
         }
-        const usuarioEncontrado = await User.findOne({username: decoded.username});
+        // console.log(decoded.id);
+        // console.log(decoded._id);
+        const usuarioEncontrado = await User.findOne({_id: decoded.id});
         if (!usuarioEncontrado) {
             return res.status(401).json({message: 'No autorizado'});
         }

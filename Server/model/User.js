@@ -7,10 +7,10 @@ const userSchema = new mongoose.Schema({
     //     required: true,
     //     unique: true
     // },
-    img: {
-        type: String,
-        required: true
-    },
+    // img: {
+    //     type: String,
+    //     required: true
+    // },
     nombre: {
         type: String,
         required: true,
@@ -33,10 +33,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    victorias: {
-        type: Number,
-        required: true
-    }
+    // victorias: {
+    //     type: Number,
+    //     required: true
+    // }
 });
 
 //Export the model

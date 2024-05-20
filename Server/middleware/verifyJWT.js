@@ -6,9 +6,9 @@ const verifyToken=(req,res,next)=>{
     const authHeader = req.headers.authorization || req.headers.Authorization;
     let token;
     let secret;
-    console.log(authHeader);
+    // console.log(authHeader);
     if (authHeader==undefined) {
-        console.log("No hay token");
+        // console.log("No hay token");
         token=req.cookies.jwt;
         secret=process.env.REFRESH_TOKEN_SECRET;
     }else{
