@@ -13,27 +13,49 @@ const Profile = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      let accessToken = Cookies.get('accessToken');
+  
+      if (!accessToken) {
+          try {
+            const refreshResponse = await axios.get('http://localhost:5000/auth/refresh');
+            const newAccessToken = refreshResponse.data.accessToken;
+            console.log(refreshResponse);
+            Cookies.remove('accessToken');
+            Cookies.set('accessToken', newAccessToken);
+            checkAuth();
+          } catch (refreshError) {
+            console.error('Error refreshing token:', refreshError);
+            navigate('/login');
+          }
+        
+        // navigate('/login');
+        // return;
+      }
+      accessToken = Cookies.get('accessToken');
+      console.log(accessToken);
       try {
         const response = await axios.get('http://localhost:5000/api/profile', {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-
+  
         if (response.status === 200) {
           console.log(response.data);
           setProfileData(response.data);
-        } else {
-          navigate('/login');
-        }
+        } 
       } catch (error) {
-        console.error('Error verifying token:', error);
-        navigate('/login');
+        // if (error.response && error.response.status === 403) {
+          
+        // } else {
+          console.error('Error verifying token:', error);
+          navigate('/login');
+        // }
       }
     };
-
+  
     checkAuth();
-  }, [accessToken, navigate]);
+  }, [navigate]);
   if (!profileData) {
     return <div>Loading...</div>;
   }

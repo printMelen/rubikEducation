@@ -76,7 +76,7 @@ const login = async (req, res, next) => {
         path: '/',
         secure: true,
         sameSite: 'None',
-        maxAge: 5 * 60 * 1000, // 5 minutes
+        maxAge: 1 * 60 * 1000, // 5 minutes
     });
     res.cookie('jwt', refreshToken, {
         path: '/',
@@ -99,6 +99,7 @@ const refresh= (req, res)=>{
         return res.status(401).json({message: 'No autorizado'});
     }
     const refreshToken=cookies.jwt;
+    console.log(refreshToken);
     jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET,asyncHandler(async(err,decoded)=>{
         if (err) {
             return res.status(403).json({message:"Prohibido"});
@@ -108,11 +109,9 @@ const refresh= (req, res)=>{
             return res.status(401).json({message: 'No autorizado'});
         }
         const accessToken = jwt.sign({
-            "UserInfo":{
-                "id": usuarioEncontrado.id,
-                "username": usuarioEncontrado.username,
-                "rol": usuarioEncontrado.rol
-            }},
+            id: usuarioEncontrado._id,
+            username: usuarioEncontrado.nombre,
+            rol: usuarioEncontrado.rol},
             process.env.ACCESS_TOKEN_SECRET,
             {expiresIn:'5m'}
         )
