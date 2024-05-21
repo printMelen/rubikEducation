@@ -1,15 +1,14 @@
-import React, {
-  useState,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-} from "react";
+// En esta parte se importan los archivos necesarios para el correcto funcionamiento del componente.
+// Los import que tienen como carpeta madre @/components son los componentes de shadcn/ui
+// Los import que tienen como carpeta madre ../store son los estados globales de Zustand
+// Los import que que tienen como carpeta madre ./ son los componentes de react de la aplicación
+import React from "react";
 import { Button } from "@/components/ui/button";
-import RubikCube2 from "./RubikCube2";
+import RubikCube from "./RubikCube";
 import useMoves from "../store/useMoves.js";
 import useRandom from "../store/useRandom.js";
 import useClue from "../store/useClue.js";
+import useAnimate from "../store/useAnimate.js";
 import Logo from "./Logo";
 import BotonGrande from "./BotonGrande";
 import {
@@ -29,54 +28,57 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import useSolve from '../store/useSolve.js';
+import useSolve from "../store/useSolve.js";
 
+// Se inicializa el componente react.
 const PlayGround = () => {
-  const [trigger, setTrigger] = useState("");
+  // Se declaran los estados generales de Zustand
+  const { animate, setAnimate } = useAnimate();
   const { setMovimientos } = useMoves();
-  const { random,setRandom } = useRandom();
+  const { random, setRandom } = useRandom();
   const { solve, setSolve } = useSolve();
-  const [open, setOpen] = React.useState(false)
-  // const [seed, setSeed] = useState();
+  const [open, setOpen] = React.useState(false);
   const { setClue } = useClue();
   const { toast } = useToast();
-  const solveFun =() =>{
+  // Funcion que actualiza el estado para que comience a resolverse el cubo
+  const solveFun = () => {
     setSolve(true);
-  }
+  };
+  // Funcion que actualiza el estado para que comience a resolverse el cubo pero solo retorna un movimiento
   const pista = () => {
     setClue(true);
     setSolve(true);
   };
   const llamarFuncionDelHijo = (funcion) => {
-    if (!random&&!solve) {
+    // Se comprueba que no esté en marcha ningun movimiento
+    if (!random && !solve && !animate) {
       let valorExistente = localStorage.getItem("cadenaRubik");
-      // console.log(valorExistente);
+
       if (valorExistente != null) {
+        // Si ya existen movimientos en el localStorage se añade a los existentes
         localStorage.setItem("cadenaRubik", valorExistente + funcion[0]);
       } else {
+        // Si no existen movimientos previos se añade directamente
         localStorage.setItem("cadenaRubik", funcion[0]);
       }
-      // console.log(valorExistente);
-  
+
       setMovimientos(funcion); // Cambia el estado del store
     }
   };
   const nuevoCubo = () => {
-    // setNuevo(true);
-    // this.forceUpdate();
+    // Recarga el componente
     window.location.reload(false);
-    // setSeed(Date.now())
   };
   const randomize = () => {
     let valorExistente = localStorage.getItem("cadenaRubik");
     if (valorExistente == null) {
-      setRandom(true);
+      setRandom(true); // Cambia el estado del store
     } else {
+      // Si ya hay movimientos realizados alerto al usuario de que debe crear un cubo nuevo
       toast({
         title: "Error",
         description:
@@ -84,17 +86,17 @@ const PlayGround = () => {
       });
     }
   };
-  // const ref = useRef();
   return (
     <>
       <div className="grid grid-cols-5 grid-rows-8 gap-0 h-screen font-sans">
         <div className="row-span-8 bg-[#E0E5E7] flex flex-col justify-between">
           <Logo></Logo>
           <div className="pl-5 pb-5">
+            {/* El tooltip es un mensaje que sale encima indicando para que sirve el boton */}
             <TooltipProvider delayDuration={0}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 items-start">
+                <Tooltip>
+                  <TooltipTrigger>
                     <BotonGrande
                       img={
                         <img
@@ -105,6 +107,13 @@ const PlayGround = () => {
                       }
                       onClick={() => nuevoCubo()}
                     />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Create cube</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger>
                     <BotonGrande
                       img={
                         <img
@@ -115,36 +124,59 @@ const PlayGround = () => {
                       }
                       onClick={() => randomize()}
                     />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Randomize</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger>
+                    {/* El dialog sirve para mostrar un mensaje en medio y opacar el fondo */}
                     <Dialog open={open} onOpenChange={setOpen}>
                       <DialogTrigger>
-                      <BotonGrande
-                      img={
-                        <img
-                          srcSet="./src/assets/pista.svg"
-                          className="w-[40px]"
-                          alt="Pista"
+                        <BotonGrande
+                          img={
+                            <img
+                              srcSet="./src/assets/pista.svg"
+                              className="w-[40px]"
+                              alt="Pista"
+                            />
+                          }
                         />
-                      }
-                    />
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle>Have you asked for help?</DialogTitle>
                           <DialogDescription>
-                            If you want just to know the next move press the next move button.
-                            If you want us to solve the cube press the solve button.
+                            If you want just to know the next move press the
+                            next move button. If you want us to solve the cube
+                            press the solve button.
                           </DialogDescription>
                         </DialogHeader>
-                        <Button onClick={() => { setOpen(false); pista(); }}>Next move</Button>
-                        <Button onClick={() => {  setOpen(false); solveFun(); }}>Solve</Button>
+                        <Button
+                          onClick={() => {
+                            setOpen(false);
+                            pista();
+                          }}
+                        >
+                          Next move
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setOpen(false);
+                            solveFun();
+                          }}
+                        >
+                          Solve
+                        </Button>
                       </DialogContent>
-                    </Dialog>                    
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Clue</p>
-                </TooltipContent>
-              </Tooltip>
+                    </Dialog>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Clue</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </TooltipProvider>
           </div>
         </div>
@@ -153,6 +185,9 @@ const PlayGround = () => {
             <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger>
+                  {/* El collapsible sirve para ocultar/mostrar los botones de los movimientos 
+                      cuando se acciona el boton Moves
+                  */}
                   <Collapsible>
                     <CollapsibleTrigger>
                       <BotonGrande
@@ -167,20 +202,13 @@ const PlayGround = () => {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <div className="flex flex-col justify-between absolute bottom-[130px] w-5 gap-3 text-black text-4xl font-extrabold">
-                        {/* <RubikCube2 ref={ref} /> */}
+                        {/* Todos los movimientos que puede realizar el cubo, el Date.now() lo añado para que se pueda
+                            llamar varias veces al mismo movimiento. Ya que nunca es igual.
+                         */}
                         <BotonGrande
                           id="B"
                           text="B"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("B")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("B")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("B" + Date.now());
                           }}
                         />
@@ -189,15 +217,6 @@ const PlayGround = () => {
                           id="U"
                           text="U"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("U")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("U")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("U" + Date.now());
                           }}
                         />
@@ -206,15 +225,6 @@ const PlayGround = () => {
                           id="D"
                           text="D"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("D")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("D")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("D" + Date.now());
                           }}
                         />
@@ -223,15 +233,6 @@ const PlayGround = () => {
                           id="L"
                           text="L"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("L")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("L")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("L" + Date.now());
                           }}
                         />
@@ -240,15 +241,6 @@ const PlayGround = () => {
                           id="R"
                           text="R"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("R")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("R")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("R" + Date.now());
                           }}
                         />
@@ -257,15 +249,6 @@ const PlayGround = () => {
                           id="F"
                           text="F"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("F")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("F")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("F" + Date.now());
                           }}
                         />
@@ -275,15 +258,6 @@ const PlayGround = () => {
                           id="b"
                           text="B'"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("b")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("b")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("b" + Date.now());
                           }}
                         />
@@ -291,15 +265,6 @@ const PlayGround = () => {
                           id="u"
                           text="U'"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("u")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("u")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("u" + Date.now());
                           }}
                         />
@@ -308,15 +273,6 @@ const PlayGround = () => {
                           id="d"
                           text="D'"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("d")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("d")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("d" + Date.now());
                           }}
                         />
@@ -325,15 +281,6 @@ const PlayGround = () => {
                           id="l"
                           text="L'"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("l")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("l")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("l" + Date.now());
                           }}
                         />
@@ -342,15 +289,6 @@ const PlayGround = () => {
                           id="r"
                           text="R'"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("r")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("r")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("r" + Date.now());
                           }}
                         />
@@ -359,15 +297,6 @@ const PlayGround = () => {
                           id="f"
                           text="F'"
                           onClick={() => {
-                            if (
-                              document
-                                .getElementById("f")
-                                .classList.contains("bg-[#90C290]")
-                            ) {
-                              document
-                                .getElementById("f")
-                                .classList.remove("bg-[#90C290]");
-                            }
                             llamarFuncionDelHijo("f" + Date.now());
                           }}
                         />
@@ -387,7 +316,7 @@ const PlayGround = () => {
           id="cube"
           className="col-span-3 row-span-6 col-start-2 row-start-1 bg-[#E0E5E7] border-black border-[2px]"
         >
-          <RubikCube2 />
+          <RubikCube />
         </div>
       </div>
       <Toaster />

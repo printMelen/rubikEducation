@@ -1,11 +1,18 @@
+// En esta parte se importan los archivos necesarios para el correcto funcionamiento del componente.
+// useEffect sirve para ejecutar determinado codigo cuando una variable en concreto cambia
+// useState sirve para gestionar el estado a lo largo del componente (de manera global se usa Zustand)
+// Los import que tienen como carpeta madre @/components son los componentes de shadcn/ui
+// Los import que tienen como carpeta madre ../store son los estados globales de Zustand
+// Los import que que tienen como carpeta madre ./ son los componentes de react de la aplicación
+// Importo zod como z para definir y validar la estructura de datos del formulario
+// Importo useForm para controlar el formulario
+// Importo axios para realizar solicitudes HTTP
 import React, { useState, useEffect } from "react";
-import Rectangulo from "./Rectangulo";
 import Logo from "./Logo";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -19,32 +26,37 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuthStore } from "../store/authState";
-import useAuth from "../hooks/useAuth";
 import axios from "axios";
 
+// Creo el esquema del formulario con zod
 const formSchema = z.object({
+  // El correo ha de ser un string y un email valido
   correo: z.string().email(),
+  // La contraseña ha de ser un string de al menos 6 caracteres de longitud
   contrasenia: z.string().min(6),
 });
-
+// Se inicializa el componente react.
 const Login = () => {
+  // Se declaran los estados
   const [error, setError] = useState(null);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 954);
+  let navigate = useNavigate();
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 954); // Cambiar aquí el punto de quiebre
+      // Si el ancho de la pantalla es menor o igual que 954 se muestra el diseño para dispositivos pequeños
+      setIsSmallScreen(window.innerWidth <= 954); 
     };
+    // Añado el evento a la ventana de ejecutar la funcion cada vez que se cambia el tamaño de esta
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  // (state)=>state.token
-  const setToken = useAuthStore();
+  // Declaro el formulario con el hook useForm
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,76 +64,30 @@ const Login = () => {
       contrasenia: "",
     },
   });
-
+  // Para permitir las solicitudes con cookies y datos de autentificación
   axios.defaults.withCredentials = true;
+
   const onSubmit = async (data) => {
-    // console.log(data);
     try {
+      // Hago una solicitud post con axios para validar al usuario
       const respuesta = await axios.post("http://localhost:5000/auth/login", {
         correo: data.correo,
         contrasenia: data.contrasenia,
       });
-      if (respuesta.status === 200) {
-        // const auth = await useAuth();
-        // console.log(respuesta.data.token);
-        // console.log("HOLAAAAA🙄");
-        // console.log(respuesta.data.token);
-        const token = respuesta.data.token; // Supongamos que la API devuelve un token
-        // await useAuth();
-        // console.log("EEEEY");
-        // console.log(token);
-        // let expires=new Date();
-        // expires.setTime(expires.getTime() + 5 * 60 * 1000);
-        // expires = "expires=" + expires.toUTCString();
-        // document.cookie = "accessToken" + "=" + token + ";" + expires + ";path=/;";
-        // Almacenar el token en el estado usando Zustand
-        // setToken(token);
-      } else {
-        setError("Error de autenticación");
+      if (respuesta.status !== 200) {
+        // Si no es correcto actualizo el estado del error
+        setError("Error de autenticación"); 
+      }else{
+        // Si es correcto redirijo al login
+        navigate('/');
       }
-      // .then(function (response) {
-      //   console.log("Respuesta de POST:", response.data);
-      // })
-      // .catch(function (err) {
-      //   setError(err);
-      //   console.error("Error en la solicitud POST:", err);
-      // });
     } catch (error) {
-      setError(error.message);
+      setError("Error de autenticación"); 
+      // setError(error.message);
     }
   };
-  // axios
-  //     .post("http://localhost:5000/api/login", {
-  //       correo:data.correo,
-  //       contrasenia:data.contrasenia,
-  //     })
-  //     .then(function (response) {
-  //       console.log("Respuesta de POST:", response.data);
-  //     })
-  //     .catch(function (err) {
-  //       setError(err);
-  //       console.error("Error en la solicitud POST:", err);
-  //     });
-  // const response = await axios.post('http://localhost:5000/api/login', data);
-  //   console.log(response.data); // Maneja la respuesta del servidor como desees
-  // } catch (err) {
-  //   setError(err);
-  //   // console.error('Error al enviar los datos:', error);
-  // }
-
-  // const sendRequest = async () =>{
-  //   const res = axios.post('http://localhost:5000/api/login',{
-  //     nombre:
-  //   });
-  // }
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  // };
   return (
-    // <div className='text-red-300'>Login</div>
-    // <div className='text-green-400'>BUENAS</div>
     <>
-      {/* mid:col-span-5 mid:row-span-1 */}
       {isSmallScreen ? (
         <div className="grid grid-cols-2 grid-rows-12 gap-0 h-screen font-sans">
           <div className="col-span-2 row-span-2 bg-[#E0E5E7] border-black border-[2px]">
@@ -129,7 +95,6 @@ const Login = () => {
           </div>
           <div className="col-span-2 row-span-10 row-start-3 bg-[#014A97] border-black border-[2px] flex flex-col items-center justify-center">
             <Card className="h-[90%] w-[75%] mx-auto">
-              {/* flex flex-col justify-center gap-6 */}
               <CardHeader>
                 <CardTitle className="text-4xl font-bold">Login</CardTitle>
                 <CardDescription>Rubik Education</CardDescription>
@@ -207,38 +172,21 @@ const Login = () => {
                     </Button>
                   </form>
                 </Form>
+                <div className="flex flex-col w-full h-[200px] p-6 text-center">
+                  {/* Si hay error lo muestro*/}
+                  {error && <span className="text-red-500">{error}</span>}
+                </div>
               </CardContent>
-              {/* <CardFooter>
-                
-              </CardFooter> */}
             </Card>
           </div>
         </div>
       ) : (
-        // <div className="grid grid-cols-5 grid-rows-6 h-screen font-sans">
-        // <div className="z-0 col-span-2 row-span-5  col-start-1 row-start-2 bg-[#014A97] border-black border-[2px] flex items-center">
-
-        // </div>
-        // <div className="z-1 col-span-3 row-span-4 col-start-3 row-start-1 bg-[#F0CE06] border-black border-[2px] bg-cubosLogin bg-cover">
-        //   {/* <img alt="" srcset="src/assets/todosCubosLogin.svg" className="object-cover z-5" /> */}
-        // </div>
-        // <div className="z-0 col-span-3 row-span-2 col-start-3 row-start-5 bg-[#E0E5E7] border-black border-[2px] flex flex-col items-center justify-center">
-        //   <span className="font-bold text-[#7D7D7D] text-xl">
-        //     Don´t have an Account?
-        //     <a href="/register" className="text-black">
-        //       {" "}
-        //       Register
-        //     </a>
-        //   </span>
-        // </div>
-        // </div>
         <div className="grid grid-cols-5 grid-rows-6 h-screen font-sans">
           <div className="col-span-2 row-span-1  bg-[#E0E5E7] border-black border-[2px]">
             <Logo />
           </div>
           <div className="z-0 col-span-2 row-span-5  col-start-1 row-start-2 bg-[#014A97] border-black border-[2px] flex items-center">
             <Card className="h-[90%] w-[75%] mx-auto">
-              {/* flex flex-col justify-center gap-6 */}
               <CardHeader>
                 <CardTitle className="text-4xl font-bold">Login</CardTitle>
                 <CardDescription>Rubik Education</CardDescription>
@@ -306,14 +254,14 @@ const Login = () => {
                     </Button>
                   </form>
                 </Form>
+                <div className="flex flex-col w-full h-[200px] p-6 text-center">
+                {/* Si hay error lo muestro*/}
+                {error && <span className="text-red-500">{error}</span>}
+                </div>
               </CardContent>
-              {/* <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter> */}
             </Card>
           </div>
           <div className="z-1 col-span-3 row-span-4 col-start-3 row-start-1 bg-[#F0CE06] border-black border-[2px] bg-cubosLogin bg-cover">
-            {/* <img alt="" srcset="src/assets/todosCubosLogin.svg" className="object-cover z-5" /> */}
           </div>
           <div className="z-0 col-span-3 row-span-2 col-start-3 row-start-5 bg-[#E0E5E7] border-black border-[2px] flex flex-col items-center justify-center">
             <span className="font-bold text-[#7D7D7D] text-xl">
@@ -326,9 +274,6 @@ const Login = () => {
           </div>
         </div>
       )}
-
-      {/* <Rectangulo w={624} h={230} color={"grey"}/>
-      <Rectangulo w={624} h={78} color={"blue"}/> */}
     </>
   );
 };

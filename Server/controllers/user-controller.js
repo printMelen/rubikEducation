@@ -31,6 +31,7 @@ const signUp = async (req, res, next) => {
         await user.save();
     } catch (err) {
         console.log(err);
+        return res.status(500).json({ message: "Error registrando al usuario" });
     }
 
     return res.status(201).json({ message: user });

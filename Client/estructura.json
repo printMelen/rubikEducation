@@ -1,0 +1,24 @@
+{
+    "Player":{
+        "ID":"String" ,
+        "idTorneo":"ObjectId (ref: 'Tournament')" ,
+        "idUsuario":"ObjectId (ref: 'User')" 
+    },
+    "Tournament":{
+        "ID":"String" ,
+        "idCreador":"ObjectId (ref: 'User')",
+        "nombre":"String" ,
+        "descripcion":"String" ,
+        "fechaInicio":"Date" ,
+        "fechaFin":"Date" 
+    },
+    "User":{
+        "img":"String" ,
+        "nombre":"String" ,
+        "correo":"String" ,
+        "contrasenia":"String" ,
+        "nivel":"Number" ,
+        "rol":"String" ,
+        "victorias":"Number"
+    }
+}
